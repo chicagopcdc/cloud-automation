@@ -7,7 +7,7 @@
     "doc": "doc"
   },
   "dependencies": {
-    "elasticdump": "^6.26.0",
+    "elasticdump": "^6.65.3",
     "express": "^4.17.1"
   },
   "devDependencies": {},
