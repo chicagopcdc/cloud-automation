@@ -74,7 +74,7 @@ variable "indexd_snapshot" {
 }
 
 variable "fence_db_instance" {
-  default = "db.t2.small"
+  default = "db.t3.small"
 }
 
 variable "amanuensis_db_instance" {
@@ -82,11 +82,11 @@ variable "amanuensis_db_instance" {
 }
 
 variable "sheepdog_db_instance" {
-  default = "db.t2.small"
+  default = "db.t3.small"
 }
 
 variable "indexd_db_instance" {
-  default = "db.t2.small"
+  default = "db.t3.small"
 }
 
 # id of AWS account that owns the public AMI's
@@ -316,5 +316,20 @@ variable "aws_db_subnet_group_name" {
 }
 
 variable "db_pg_name" {
-  default = "dbPgName"
+  default = ""
+}
+
+variable "fence_max_allocated_storage" {
+  description = "Maximum allocated storage for autosacaling"
+  default     = 0
+}
+
+variable "sheepdog_max_allocated_storage" {
+  description = "Maximum allocated storage for autosacaling"
+  default     = 0
+}
+
+variable "indexd_max_allocated_storage" {
+  description = "Maximum allocated storage for autosacaling"
+  default     = 0
 }
