@@ -188,7 +188,7 @@ variable "indexd_backup_window" {
 }
 
 variable "fence_engine_version" {
-  default = "9.6.11"
+  default = "13.3"
 }
 
 variable "amanuensis_engine_version" {
@@ -196,11 +196,11 @@ variable "amanuensis_engine_version" {
 }
 
 variable "sheepdog_engine_version" {
-  default = "9.6.11"
+  default = "13.3"
 }
 
 variable "indexd_engine_version" {
-  default = "9.6.11"
+  default = "13.3"
 }
 
 variable "fence_auto_minor_version_upgrade" {
@@ -313,10 +313,6 @@ variable "security_group_local_id" {
 
 variable "aws_db_subnet_group_name" {
   default = "subnetName"
-}
-
-variable "db_pg_name" {
-  default = ""
 }
 
 variable "fence_max_allocated_storage" {
