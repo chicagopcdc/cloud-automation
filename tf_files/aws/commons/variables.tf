@@ -272,7 +272,7 @@ variable "fence_engine_version" {
 }
 
 variable "amanuensis_engine_version" {
-  default = "9.6.11" 
+  default = "13.3" 
 }
 
 variable "sheepdog_engine_version" {

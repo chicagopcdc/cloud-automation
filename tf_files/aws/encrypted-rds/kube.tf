@@ -53,7 +53,7 @@ resource "aws_db_instance" "db_amanuensis" {
   storage_type                = "gp2"
   engine                      = "${var.amanuensis_engine}"
   engine_version              = "${var.amanuensis_engine_version}"
-  parameter_group_name        = "${var.db_pg_name}"
+  parameter_group_name        = "${aws_db_parameter_group.rds-cdis-pg.name}"
   instance_class              = "${var.amanuensis_db_instance}"
   name                        = "${var.amanuensis_database_name}"
   username                    = "${var.amanuensis_db_username}"
