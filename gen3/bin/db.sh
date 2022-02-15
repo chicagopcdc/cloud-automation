@@ -139,7 +139,7 @@ EOM
 # Validate that the given server name is in gen3DbServerList
 # The idea is we have multiple services distributed over
 # a smaller set of servers.  
-# The current servers are fence, indexd, and sheepdog.
+# The current servers are fence, amanuensis, indexd, and sheepdog.
 # Note that currently a server is also a service, 
 # but a service may not be a server
 #
@@ -295,7 +295,7 @@ EOM
 # using that service credentials.  Respects psql overrides
 # for '-d' and '-U'
 #
-# @param serviceName should be one of indexd, fence, sheepdog
+# @param serviceName should be one of indexd, fence, amanuensis, sheepdog
 #
 gen3_db_psql() {
   local key=$1
@@ -832,9 +832,11 @@ gen3_db_upgrade() {
   local credsFile=$(cat $(gen3_secrets_folder)/creds.json)
   # Get the old db information
   local originalFenceDbUrl=$(echo $credsFile | jq -r .fence.db_host)
+  local originalAmanuensisDbUrl=$(echo $credsFile | jq -r .amanuensis.db_host)
   local originalIndexdDbUrl=$(echo $credsFile | jq -r .indexd.db_host)
   local originalGdcApiDbUrl=$(echo $credsFile | jq -r .sheepdog.db_host)
   local originalFenceDb=$(echo $credsFile | jq -r .fence.db_host | cut -d '.' -f 1)
+  local originalAmanuensisDb=$(echo $credsFile | jq -r .amanuensis.db_host | cut -d '.' -f 1)
   local originalIndexdDb=$(echo $credsFile | jq -r .indexd.db_host | cut -d '.' -f 1)
   local originalGdcApiDb=$(echo $credsFile | jq -r .sheepdog.db_host | cut -d '.' -f 1)
   # Get the info to make sure new db are in same subnet with same groups
@@ -844,6 +846,7 @@ gen3_db_upgrade() {
   # Create snapshots of old db's asap, so that can complete while we work on terraform
   gen3_log_info "Creating db snapshots"
   aws rds create-db-snapshot --db-snapshot-identifier fence-psql-upgrade-snapshot-$2-$(date -u +%Y%m%d) --db-instance-identifier $originalFenceDb
+  aws rds create-db-snapshot --db-snapshot-identifier amanuensis-psql-upgrade-snapshot-$2-$(date -u +%Y%m%d) --db-instance-identifier $originalAmanuensisDb
   aws rds create-db-snapshot --db-snapshot-identifier indexd-psql-upgrade-snapshot-$2-$(date -u +%Y%m%d) --db-instance-identifier $originalIndexdDb
   aws rds create-db-snapshot --db-snapshot-identifier gdcapi-psql-upgrade-snapshot-$2-$(date -u +%Y%m%d) --db-instance-identifier $originalGdcApiDb
   # Workon old module so we can grab the config.tfvars from it
@@ -867,13 +870,15 @@ gen3_db_upgrade() {
   echo "security_group_local_id=\"$securityGroupId\"" >> config.tfvars
   echo "aws_db_subnet_group_name=\"$dbSubnet\"" >> config.tfvars
   echo "fence_snapshot = \"fence-psql-upgrade-snapshot-$2-$(date -u +%Y%m%d)\"" >> config.tfvars
+  echo "amanuensis_snapshot = \"amanuensis-psql-upgrade-snapshot-$2-$(date -u +%Y%m%d)\"" >> config.tfvars
   echo "indexd_snapshot = \"indexd-psql-upgrade-snapshot-$2-$(date -u +%Y%m%d)\"" >> config.tfvars
   echo "gdcapi_snapshot = \"gdcapi-psql-upgrade-snapshot-$2-$(date -u +%Y%m%d)\"" >> config.tfvars
   echo "fence_engine_version = \"$version\"" >> config.tfvars
+  echo "amanuensis_engine_version = \"$version\"" >> config.tfvars
   echo "indexd_engine_version = \"$version\"" >> config.tfvars
   echo "sheepdog_engine_version = \"$version\"" >> config.tfvars
   # Wait for the snapshots to finish being taken
-  while [[ "$(aws rds describe-db-snapshots --db-snapshot-identifier fence-psql-upgrade-snapshot-$2-$(date -u +%Y%m%d) | jq -r .DBSnapshots[0].Status)" != "available" ]] && [[ "$(aws rds describe-db-snapshots --db-snapshot-identifier indexd-psql-upgrade-snapshot-$2-$(date -u +%Y%m%d) | jq -r .DBSnapshots[0].Status)" != "available" ]] && [[ "$(aws rds describe-db-snapshots --db-snapshot-identifier gdcapi-psql-upgrade-snapshot-$2-$(date -u +%Y%m%d) | jq -r .DBSnapshots[0].Status)" != "available" ]]; do
+  while [[ "$(aws rds describe-db-snapshots --db-snapshot-identifier fence-psql-upgrade-snapshot-$2-$(date -u +%Y%m%d) | jq -r .DBSnapshots[0].Status)" != "available" ]] && [[ "$(aws rds describe-db-snapshots --db-snapshot-identifier amanuensis-psql-upgrade-snapshot-$2-$(date -u +%Y%m%d) | jq -r .DBSnapshots[0].Status)" != "available" ]] && [[ "$(aws rds describe-db-snapshots --db-snapshot-identifier indexd-psql-upgrade-snapshot-$2-$(date -u +%Y%m%d) | jq -r .DBSnapshots[0].Status)" != "available" ]] && [[ "$(aws rds describe-db-snapshots --db-snapshot-identifier gdcapi-psql-upgrade-snapshot-$2-$(date -u +%Y%m%d) | jq -r .DBSnapshots[0].Status)" != "available" ]]; do
     gen3_log_info "Waiting for snapshots to become ready"
     sleep 60
   done
@@ -885,10 +890,12 @@ gen3_db_upgrade() {
   gen3 tfapply
   gen3_log_info "New databases ready, updating secrets to point to new db's, run kube-setup-secrets and roll everything when things looks ready"
   local newFenceDbUrl=$(aws rds describe-db-instances --filters '{"Name": "db-instance-id", "Values": ["'$vpc_name'-psql'$(echo $version| cut -d '.' -f 1)'-encrypted-fencedb"]}' | jq -r .DBInstances[0].Endpoint.Address)
+  local newAmanuensisDbUrl=$(aws rds describe-db-instances --filters '{"Name": "db-instance-id", "Values": ["'$vpc_name'-psql'$(echo $version| cut -d '.' -f 1)'-encrypted-amanuensisdb"]}' | jq -r .DBInstances[0].Endpoint.Address)
   local newIndexdDbUrl=$(aws rds describe-db-instances --filters '{"Name": "db-instance-id", "Values": ["'$vpc_name'-psql'$(echo $version| cut -d '.' -f 1)'-encrypted-indexddb"]}' | jq -r .DBInstances[0].Endpoint.Address)
   local newGdcApiDbUrl=$(aws rds describe-db-instances --filters '{"Name": "db-instance-id", "Values": ["'$vpc_name'-psql'$(echo $version| cut -d '.' -f 1)'-encrypted-gdcapidb"]}' | jq -r .DBInstances[0].Endpoint.Address)
   # Update the secrets folder with the new hostname
   grep -rl $originalFenceDbUrl "$(gen3_secrets_folder)" | xargs sed -i "s/$originalFenceDbUrl/$newFenceDbUrl/g"
+  grep -rl $originalAmanuensisDbUrl "$(gen3_secrets_folder)" | xargs sed -i "s/$originalAmanuensisDbUrl/$newAmanuensisDbUrl/g"
   grep -rl $originalIndexdDbUrl "$(gen3_secrets_folder)" | xargs sed -i "s/$originalIndexdDbUrl/$newIndexdDbUrl/g"
   grep -rl $originalGdcApiDbUrl "$(gen3_secrets_folder)" | xargs sed -i "s/$originalGdcApiDbUrl/$newGdcApiDbUrl/g"
 
@@ -899,6 +906,8 @@ gen3_db_upgrade() {
   gen3 tform import --config ~/cloud-automation/tf_files/aws/commons aws_db_instance.db_gdcapi  $vpc-psql$(echo $version| cut -d '.' -f 1)-encrypted-gdcapidb
   gen3 tform state rm aws_db_instance.db_fence
   gen3 tform import --config ~/cloud-automation/tf_files/aws/commons aws_db_instance.db_fence  $vpc-psql$(echo $version| cut -d '.' -f 1)-encrypted-fencedb
+  gen3 tform state rm aws_db_instance.db_amanuensis
+  gen3 tform import --config ~/cloud-automation/tf_files/aws/commons aws_db_instance.db_amanuensis  $vpc-psql$(echo $version| cut -d '.' -f 1)-encrypted-amanuensisdb
   gen3 tform state rm aws_db_instance.db_indexd
   gen3 tform import --config ~/cloud-automation/tf_files/aws/commons aws_db_instance.db_indexd  $vpc-psql$(echo $version| cut -d '.' -f 1)-encrypted-indexddb
 }

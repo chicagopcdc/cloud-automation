@@ -78,7 +78,7 @@ variable "fence_db_instance" {
 }
 
 variable "amanuensis_db_instance" {
-  default = "db.t2.small"
+  default = "db.t3.small"
 }
 
 variable "sheepdog_db_instance" {
@@ -316,6 +316,11 @@ variable "aws_db_subnet_group_name" {
 }
 
 variable "fence_max_allocated_storage" {
+  description = "Maximum allocated storage for autosacaling"
+  default     = 0
+}
+
+variable "amanuensis_max_allocated_storage" {
   description = "Maximum allocated storage for autosacaling"
   default     = 0
 }

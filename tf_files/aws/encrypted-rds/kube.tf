@@ -69,6 +69,7 @@ resource "aws_db_instance" "db_amanuensis" {
   multi_az                    = "${var.amanuensis_ha}"
   auto_minor_version_upgrade  = "${var.amanuensis_auto_minor_version_upgrade}"
   storage_encrypted           = "${var.rds_instance_storage_encrypted}"
+  max_allocated_storage       = "${var.amanuensis_max_allocated_storage}"
   tags = {
     Environment               = "${var.vpc_name}"
     Organization              = "${var.organization_name}"

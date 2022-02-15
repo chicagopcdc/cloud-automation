@@ -95,7 +95,7 @@ variable "fence_db_instance" {
 }
 
 variable "amanuensis_db_instance" {
-  default = "db.t2.small"
+  default = "db.t3.small"
 }
 
 variable "sheepdog_db_instance" {
