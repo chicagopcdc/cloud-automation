@@ -122,7 +122,7 @@ gen3_db_init() {
   "server1": $(gen3_db_service_creds fence | jq -r '.farmEnabled=true'),
   "server2": $(gen3_db_service_creds indexd | jq -r '.farmEnabled=true'),
   "server3": $(gen3_db_service_creds sheepdog | jq -r '.farmEnabled=false'),
-  "server4": $(gen3_db_service_creds amanuensis | jq -r '.farmEnabled=true'),
+  "server4": $(gen3_db_service_creds amanuensis | jq -r '.farmEnabled=true')
 }
 EOM
       ) | jq -r . > "$secretPath"
