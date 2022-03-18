@@ -19,6 +19,8 @@ spec:
       labels:
         app: argo-wrapper
         tags.datadoghq.com/service: "argo-wrapper"
+	netnolimit: "yes"
+        public: "yes"
         GEN3_ARGO-WRAPPER_VERSION
     spec:
       affinity:
