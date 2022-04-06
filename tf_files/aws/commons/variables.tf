@@ -91,19 +91,19 @@ variable "indexd_snapshot" {
 }
 
 variable "fence_db_instance" {
-  default = "db.t2.small"
+  default = "db.t3.small"
 }
 
 variable "amanuensis_db_instance" {
-  default = "db.t2.small"
+  default = "db.t3.small"
 }
 
 variable "sheepdog_db_instance" {
-  default = "db.t2.small"
+  default = "db.t3.small"
 }
 
 variable "indexd_db_instance" {
-  default = "db.t2.small"
+  default = "db.t3.small"
 }
 
 variable "hostname" {
@@ -268,19 +268,19 @@ variable "indexd_backup_window" {
 }
 
 variable "fence_engine_version" {
-  default = "9.6.11" 
+  default = "13.3" 
 }
 
 variable "amanuensis_engine_version" {
-  default = "9.6.11" 
+  default = "13.3" 
 }
 
 variable "sheepdog_engine_version" {
-  default = "9.6.11"
+  default = "13.3"
 }
 
 variable "indexd_engine_version" {
-  default = "9.6.11" 
+  default = "13.3" 
 }
 
 variable "fence_auto_minor_version_upgrade" {

@@ -92,6 +92,12 @@ spec:
             GEN3_ADD_DBGAP|-value: "false"-|
           - name: ONLY_DBGAP
             GEN3_ONLY_DBGAP|-value: "false"-|
+          - name: GEN3_UWSGI_TIMEOUT
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: uwsgi-timeout
+                optional: true
           - name: SLACK_SEND_DBGAP
             valueFrom:
               configMapKeyRef:
