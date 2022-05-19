@@ -33,6 +33,7 @@ module "cdis_vpc" {
   #private_kube_route             = "${aws_route_table.private_kube.id}"
   branch                         = "${var.branch}"
   fence-bot_bucket_access_arns   = "${var.fence-bot_bucket_access_arns}"
+  amanuensis-bot_bucket_access_arns   = "${var.amanuensis-bot_bucket_access_arns}"
   deploy_ha_squid                = "${var.deploy_ha_squid}"
   deploy_single_proxy            = "${var.deploy_single_proxy}"
 

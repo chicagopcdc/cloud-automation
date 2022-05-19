@@ -76,3 +76,15 @@ output "fence-bot_secret" {
 output "data-bucket_name" {
   value = "${module.data-bucket.data-bucket_name}"
 }
+
+output "amanuensis-bot_id" {
+  value = "${module.amanuensis-bot-user.amanuensis-bot_id}"
+}
+
+output "amanuensis-bot_secret" {
+  value = "${module.amanuensis-bot-user.amanuensis-bot_secret}"
+}
+
+output "data-release-bucket_name" {
+  value = "${module.data-release-bucket.data-bucket_name}"
+}
