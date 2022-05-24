@@ -16,7 +16,10 @@
         "db_password": "${amanuensis_pwd}",
         "db_database": "${amanuensis_db}",
         "hostname": "${hostname}",
-        "indexd_password": ""
+        "indexd_password": "",
+        "data_delivery_bucket": ${data-release-bucket_name},
+        "data_delivery_bucket_aws_key_id": ${amanuensis-bot_user_id},
+        "data_delivery_bucket_aws_access_key": ${amanuensis-bot_user_secret}
     },
     "sheepdog": {
         "fence_host": "${fence_host}",

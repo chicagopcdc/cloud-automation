@@ -100,6 +100,10 @@ module "config_files" {
   aws_user_key                = "${module.cdis_vpc.es_user_key}"
   aws_user_key_id             = "${module.cdis_vpc.es_user_key_id}"
 
+  amanuensis-bot_user_secret  = "${module.cdis_vpc.amanuensis-bot_secret}"
+  amanuensis-bot_user_id     = "${module.cdis_vpc.amanuensis-bot_id}"
+  data-release-bucket_name   = "${module.cdis_vpc.data-release-bucket_name}"
+
   indexd_prefix               = "${var.indexd_prefix}"
 
 ## mailgun creds
