@@ -74,7 +74,7 @@ module "data-release-bucket" {
 module "amanuensis-bot-user" {
   source               = "../amanuensis-bot-user"
   vpc_name             = "${var.vpc_name}"
-  bucket_name          = "${module.data-release-bucket.data-bucket_name}"
+  bucket_name          = "${module.data-release-bucket.data-release-bucket_name}"
   bucket_access_arns   = "${var.amanuensis-bot_bucket_access_arns}"
 }
 
