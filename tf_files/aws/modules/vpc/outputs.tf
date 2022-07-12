@@ -86,5 +86,5 @@ output "amanuensis-bot_secret" {
 }
 
 output "data-release-bucket_name" {
-  value = "${module.data-release-bucket.data-bucket_name}"
+  value = "${module.data-release-bucket.data-release-bucket_name}"
 }
