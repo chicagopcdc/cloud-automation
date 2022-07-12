@@ -172,9 +172,9 @@ cat - > creds.json <<EOM
         "db_password": "${amanuensisDbPassword}",
         "db_database": "${amanuensisDbSchema}",
         "hostname": "",
-        "data_delivery_bucket": ${dataReleaseBucket},
-        "data_delivery_bucket_aws_key_id": ${dataReleaseAwsId},
-        "data_delivery_bucket_aws_access_key": ${dataReleaseAwsSecret}
+        "data_delivery_bucket": "${dataReleaseBucket}",
+        "data_delivery_bucket_aws_key_id": "${dataReleaseAwsId}",
+        "data_delivery_bucket_aws_access_key": "${dataReleaseAwsSecret}"
     },
     "userapi": {
         "db_host": "",
