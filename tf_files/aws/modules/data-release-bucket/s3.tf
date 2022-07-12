@@ -14,7 +14,7 @@ resource "aws_s3_bucket" "data_bucket" {
   }
 
   tags = {
-    Name        = "${var.vpc_name}-data-bucket"
+    Name        = "${var.vpc_name}-data-release-bucket"
     Environment = "${var.environment}"
     Purpose     = "data bucket"
   }
