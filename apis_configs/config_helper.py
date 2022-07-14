@@ -364,6 +364,7 @@ def _replace(yaml_config, path_to_key, replacement_value, start=0, nested_level=
         replacement_value,
         start,
         nested_level,
+        key_only=key_only,
     )
 
 
