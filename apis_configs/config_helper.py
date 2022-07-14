@@ -127,11 +127,6 @@ def inject_creds_into_amanuensis_config(creds_file_path, config_file_path):
     print("  HOSTNAME injected with value(s) from creds.json")
     config_file = _replace(config_file, "HOSTNAME", "{}".format(hostname))
 
-    print("  AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET injected with value(s) from creds.json")
-    config_file = _replace(
-        config_file, "AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET", data_delivery_bucket, key_only=True
-    )
-
     print("  AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET/aws_access_key_id injected with value(s) from creds.json")
     config_file = _replace(
         config_file, "AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET/aws_access_key_id", data_delivery_bucket_aws_key_id
@@ -140,6 +135,11 @@ def inject_creds_into_amanuensis_config(creds_file_path, config_file_path):
     print("  AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET/aws_secret_access_key injected with value(s) from creds.json")
     config_file = _replace(
         config_file, "AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET/aws_secret_access_key", data_delivery_bucket_aws_access_key
+    )
+
+    print("  AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET injected with value(s) from creds.json")
+    config_file = _replace(
+        config_file, "AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET", data_delivery_bucket, key_only=True
     )
 
     # print("  ENCRYPTION_KEY injected with value(s) from creds.json")
