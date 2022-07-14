@@ -110,7 +110,7 @@ def inject_creds_into_amanuensis_config(creds_file_path, config_file_path):
     hostname = _get_nested_value(creds, "hostname")
     data_delivery_bucket = _get_nested_value(creds, "data_delivery_bucket")
     data_delivery_bucket_aws_key_id = _get_nested_value(creds, "data_delivery_bucket_aws_key_id")
-    data_delivery_bucket_aws_access_key = _get_nested_value(creds, "data_delivery_bucket_aws_access_key"),
+    data_delivery_bucket_aws_access_key = _get_nested_value(creds, "data_delivery_bucket_aws_access_key")
 
     db_path = "postgresql://{}:{}@{}:5432/{}".format(
         db_username, db_password, db_host, db_database
