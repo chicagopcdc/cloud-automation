@@ -51,6 +51,19 @@ output "data-bucket_name" {
 }
 
 
+output "amanuensis-bot_user_secret" {
+  value = "${module.cdis_vpc.amanuensis-bot_secret}"
+}
+
+output "amanuensis-bot_user_id" {
+  value = "${module.cdis_vpc.amanuensis-bot_id}"
+}
+
+output "data-release-bucket_name" {
+  value = "${module.cdis_vpc.data-release-bucket_name}"
+}
+
+
 #--------------------------------------------------------------
 # Legacy stuff ...
 # We want to move away from generating output files, and

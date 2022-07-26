@@ -37,6 +37,10 @@ data "template_file" "creds" {
     aws_user_key                = "${var.aws_user_key}"
     aws_user_key_id             = "${var.aws_user_key_id}"
     indexd_prefix               = "${var.indexd_prefix}"
+    amanuensis-bot_user_secret  = "${var.amanuensis-bot_user_secret}"
+    amanuensis-bot_user_id      = "${var.amanuensis-bot_user_id}"
+    data-release-bucket_name    = "${var.data-release-bucket_name}"
+
 
     ## mailgun creds
     mailgun_api_key             = "${var.mailgun_api_key}"

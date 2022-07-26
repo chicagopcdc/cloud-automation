@@ -33,6 +33,7 @@ module "cdis_vpc" {
   #private_kube_route             = "${aws_route_table.private_kube.id}"
   branch                         = "${var.branch}"
   fence-bot_bucket_access_arns   = "${var.fence-bot_bucket_access_arns}"
+  amanuensis-bot_bucket_access_arns   = "${var.amanuensis-bot_bucket_access_arns}"
   deploy_ha_squid                = "${var.deploy_ha_squid}"
   deploy_single_proxy            = "${var.deploy_single_proxy}"
 
@@ -98,6 +99,10 @@ module "config_files" {
 
   aws_user_key                = "${module.cdis_vpc.es_user_key}"
   aws_user_key_id             = "${module.cdis_vpc.es_user_key_id}"
+
+  amanuensis-bot_user_secret  = "${module.cdis_vpc.amanuensis-bot_secret}"
+  amanuensis-bot_user_id     = "${module.cdis_vpc.amanuensis-bot_id}"
+  data-release-bucket_name   = "${module.cdis_vpc.data-release-bucket_name}"
 
   indexd_prefix               = "${var.indexd_prefix}"
 

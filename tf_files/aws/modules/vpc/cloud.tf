@@ -65,6 +65,19 @@ module "fence-bot-user" {
   bucket_access_arns   = "${var.fence-bot_bucket_access_arns}"
 }
 
+module "data-release-bucket" {
+  source               = "../data-release-bucket"
+  vpc_name             = "${var.vpc_name}"
+  environment          = "${var.vpc_name}"
+}
+
+module "amanuensis-bot-user" {
+  source               = "../amanuensis-bot-user"
+  vpc_name             = "${var.vpc_name}"
+  bucket_name          = "${module.data-release-bucket.data-release-bucket_name}"
+  bucket_access_arns   = "${var.amanuensis-bot_bucket_access_arns}"
+}
+
 resource "aws_vpc" "main" {
   cidr_block           = "${var.vpc_cidr_block}"
 

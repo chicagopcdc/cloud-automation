@@ -165,6 +165,7 @@ gdcapi_indexd_password="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 | ha-squid_bootstrap_script | Bootstrap script for HA squid instance in `cloud-automation/flavors/squid_auto` | string | "squid_running_on_docker.sh" |
 | ha-squid_extra_vars | If the bootstrap script needs additional variables, they can be added to this list | list | ["squid_image=master"] |
 | fence-bot_bucket_access_arns | Should fence bot user access additional data buckets, list their ARN  here | list | [] |
+| amanuensis-bot_bucket_access_arns | Should Amanuensis bot user access additional data buckets, list their ARN  here | list | [] |
 | deploy_ha_squid | If HA squid will be present as proxy | boolean | false |
 | ha-squid_cluster_desired_capasity | The desired number of instances for HA squid | number | 2 |
 | ha-squid_cluster_min_size | Minimun number of instances in the autoscaling group for HA squid | number | 1 |
@@ -199,6 +200,8 @@ gdcapi_indexd_password="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 | indexd_rds_id | ID of indexd database |
 | fence-bot_user_secret | Secret to use for the fence bot user |
 | fence-bot_user_id | User id for the fence bot user |
+| amanuensis-bot_user_secret | Secret to use for the amanuensis bot user |
+| amanuensis-bot_user_id | User id for the amanuensis bot user |
 | data-bucket_name | Name of the data bucket |
 
 

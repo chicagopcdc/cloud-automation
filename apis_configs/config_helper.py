@@ -108,6 +108,10 @@ def inject_creds_into_amanuensis_config(creds_file_path, config_file_path):
     db_password = _get_nested_value(creds, "db_password")
     db_database = _get_nested_value(creds, "db_database")
     hostname = _get_nested_value(creds, "hostname")
+    data_delivery_bucket = _get_nested_value(creds, "data_delivery_bucket")
+    data_delivery_bucket_aws_key_id = _get_nested_value(creds, "data_delivery_bucket_aws_key_id")
+    data_delivery_bucket_aws_access_key = _get_nested_value(creds, "data_delivery_bucket_aws_access_key")
+
     db_path = "postgresql://{}:{}@{}:5432/{}".format(
         db_username, db_password, db_host, db_database
     )
@@ -122,6 +126,21 @@ def inject_creds_into_amanuensis_config(creds_file_path, config_file_path):
 
     print("  HOSTNAME injected with value(s) from creds.json")
     config_file = _replace(config_file, "HOSTNAME", "{}".format(hostname))
+
+    print("  AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET/aws_access_key_id injected with value(s) from creds.json")
+    config_file = _replace(
+        config_file, "AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET/aws_access_key_id", data_delivery_bucket_aws_key_id
+    )
+
+    print("  AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET/aws_secret_access_key injected with value(s) from creds.json")
+    config_file = _replace(
+        config_file, "AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET/aws_secret_access_key", data_delivery_bucket_aws_access_key
+    )
+
+    print("  AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET injected with value(s) from creds.json")
+    config_file = _replace(
+        config_file, "AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET", data_delivery_bucket, key_only=True
+    )
 
     # print("  ENCRYPTION_KEY injected with value(s) from creds.json")
     # config_file = _replace(config_file, "ENCRYPTION_KEY", hmac_key)
@@ -283,7 +302,7 @@ def _nested_replace(config_file, key, value, replacement_path=None):
     return config_file
 
 
-def _replace(yaml_config, path_to_key, replacement_value, start=0, nested_level=0):
+def _replace(yaml_config, path_to_key, replacement_value, start=0, nested_level=0, key_only=False):
     """
     Replace a nested value in a YAML file string with the given value without
     losing comments. Uses a regex to do the replacement.
@@ -314,14 +333,23 @@ def _replace(yaml_config, path_to_key, replacement_value, start=0, nested_level=
         # replace the current key:value with the new replacement value
         match_start = start + matches.start(0) + len("  " * nested_level)
         match_end = start + matches.end(0)
-        yaml_config = (
-            yaml_config[:match_start]
-            + "{}: {}\n".format(
-                nested_path_to_replace[0],
-                _get_yaml_replacement_value(replacement_value, nested_level),
+        if not key_only:
+            yaml_config = (
+                yaml_config[:match_start]
+                + "{}: {}\n".format(
+                    nested_path_to_replace[0],
+                    _get_yaml_replacement_value(replacement_value, nested_level),
+                )
+                + yaml_config[match_end:]
             )
-            + yaml_config[match_end:]
-        )
+        else:
+            yaml_config = (
+                yaml_config[:match_start]
+                + "{}:\n".format(
+                    _get_yaml_replacement_value(replacement_value, nested_level),
+                )
+                + yaml_config[match_end:]
+            )
 
         return yaml_config
 
@@ -336,6 +364,7 @@ def _replace(yaml_config, path_to_key, replacement_value, start=0, nested_level=
         replacement_value,
         start,
         nested_level,
+        key_only=key_only,
     )
 
 
