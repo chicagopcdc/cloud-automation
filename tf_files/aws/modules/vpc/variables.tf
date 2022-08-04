@@ -1,12 +1,25 @@
 # id of AWS account that owns the public AMI's
 variable "ami_account_id" {
-  default = "707767160287"
+  default = "099720109477"
 }
 
 variable "vpc_name" {}
 
 variable "vpc_cidr_block" {
   default = "172.24.17.0/20"
+}
+
+
+variable "secondary_cidr_block" {
+  default = ""
+}
+
+variable "vpc_flow_logs" {
+  default = false
+}
+
+variable "vpc_flow_traffic" {
+  default = "ALL"
 }
 
 # name of aws_key_pair ssh key to attach to VM's
@@ -82,6 +95,12 @@ variable "fence-bot_bucket_access_arns" {
   #default     = []
 }
 
+variable "amanuensis-bot_bucket_access_arns" {
+  description = "When amanuensis bot has to access another bucket that wasn't created by the VPC module"
+  type        = "list"
+  #default     = []
+}
+
 variable "deploy_ha_squid" {
   description = "should you want to deploy HA-squid"
   default     = false
@@ -121,4 +140,8 @@ variable "customer_id" {
 
 variable "slack_webhook" {
   default = ""
+}
+
+variable "fips" {
+  default = false
 }

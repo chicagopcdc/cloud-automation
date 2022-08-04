@@ -64,7 +64,8 @@ There are mandatory variables, and there are a few other optionals that are set 
 | squid_bootstrap_script | Script to run on deployment for the HA squid instances | string | squid_running_on_docker.sh |
 | deploy_single_proxy | If you don't want squid HA then set this to true | boolean | true |
 | squid_extra_vars | Additional variables to pass along with the bootstrapscript | list | [] |
-| fence-bot_bucket_access_arns | If fence user needs to access an additional bucket as to what's created in this module | list | [] |
+| fence-bot_bucket_access_arns | If Fence user needs to access an additional bucket as to what's created in this module | list | [] |
+| amanuensis-bot_bucket_access_arns | If Amanuensis user needs to access an additional bucket as to what's created in this module | list | [] |
 | deploy_ha_squid | If you want the HA squid cluster | boolean | false |
 | squid_cluster_desired_capasity | If ha squid is enabled and you want to set your own capasity | int | 2 | 
 | squid_cluster_min_size | If ha squid is enabled and you want to set your own min size | int | 1 |
@@ -92,5 +93,8 @@ There are mandatory variables, and there are a few other optionals that are set 
 | es_user_key_id | secret for ES access |
 | cwlogs | log group used for logging |
 | fence-bot_id | Fence bot user ID |
-| fence-bot_secret | fence bot user secret |
+| fence-bot_secret | Fence bot user secret |
+| data-bucket_name | Data bucket name |
+| amanuensis-bot_id | Amanuensis bot user ID |
+| amanuensis-bot_secret | Amanuensis bot user secret |
 | data-bucket_name | Data bucket name |

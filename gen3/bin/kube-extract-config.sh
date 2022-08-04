@@ -25,6 +25,9 @@ fenceDbSchema=""
 amanuensisDbUser=""
 amanuensisDbPassword=""
 amanuensisDbSchema=""
+dataReleaseBucket=""
+dataReleaseAwsId=""
+dataReleaseAwsSecret=""
 googleClientId=""
 googleClientSecret=""
 gdcapiDbUser=""
@@ -117,6 +120,10 @@ if [[ ! -z "${amanuensisPyFile}" ]]; then
   amanuensisDbUser=$(grep ^DB ${amanuensisPyFile} | sed 's@^.*postgresql://@@' | sed 's/:.*$//')
   amanuensisDbPassword=$(grep ^DB ${amanuensisPyFile} | sed "s/^.*_user://" | sed 's/@.*$//')
   amanuensisDbSchema=$(grep ^DB ${amanuensisPyFile} | sed 's@^.*5432/@@' | sed "s/'\$//")
+
+  dataReleaseBucket=$(grep ^DB ${amanuensisPyFile} | sed 's@^.*5432/@@' | sed "s/'\$//")
+  dataReleaseAwsId=$(grep ^DB ${amanuensisPyFile} | sed 's@^.*5432/@@' | sed "s/'\$//")
+  dataReleaseAwsSecret=$(grep ^DB ${amanuensisPyFile} | sed 's@^.*5432/@@' | sed "s/'\$//")
 fi
 
 
@@ -164,7 +171,10 @@ cat - > creds.json <<EOM
         "db_username": "${amanuensisDbUser}",
         "db_password": "${amanuensisDbPassword}",
         "db_database": "${amanuensisDbSchema}",
-        "hostname": ""
+        "hostname": "",
+        "data_delivery_bucket": "${dataReleaseBucket}",
+        "data_delivery_bucket_aws_key_id": "${dataReleaseAwsId}",
+        "data_delivery_bucket_aws_access_key": "${dataReleaseAwsSecret}"
     },
     "userapi": {
         "db_host": "",
