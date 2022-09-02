@@ -13,7 +13,6 @@ variable "purpose" {
 variable "bucket_lifecycle_filter_prefix" {
   default = ""
 }
-
 variable "noncurrent_version_expiration" {
   default = 180
 }
