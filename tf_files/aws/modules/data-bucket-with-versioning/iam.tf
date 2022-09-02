@@ -2,7 +2,7 @@
 ## Role and Policies for the bucket
 
 resource "aws_iam_role" "data_bucket" {
-  name = "${var.vpc_name}-data-release-bucket-access"
+  name = "${var.vpc_name}-data-bucket-with-versioning-access"
   path = "/"
 
   assume_role_policy = <<EOF
@@ -55,13 +55,13 @@ data "aws_iam_policy_document" "data_release_bucket_writer" {
 resource "aws_iam_policy" "data_release_bucket_reader" {
   name        = "data_release_bucket_read_${var.vpc_name}"
   description = "Data Bucket access for ${var.vpc_name}"
-  policy      = data.aws_iam_policy_document.data_release_bucket_reader.json
+  policy      = "${data.aws_iam_policy_document.data_release_bucket_reader.json}"
 }
 
 resource "aws_iam_policy" "data_release_bucket_writer" {
   name        = "data_release_bucket_write_${var.vpc_name}"
   description = "Data Bucket access for ${var.vpc_name}"
-  policy      = data.aws_iam_policy_document.data_release_bucket_writer.json
+  policy      = "${data.aws_iam_policy_document.data_release_bucket_writer.json}"
 }
 
 
@@ -69,13 +69,13 @@ resource "aws_iam_policy" "data_release_bucket_writer" {
 ## Policies attached to roles
 
 resource "aws_iam_role_policy_attachment" "data_release_bucket_reader" {
-  role       = aws_iam_role.data_bucket.name
-  policy_arn = aws_iam_policy.data_release_bucket_reader.arn
+  role       = "${aws_iam_role.data_bucket.name}"
+  policy_arn = "${aws_iam_policy.data_release_bucket_reader.arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "data_release_bucket_writer" {
-  role       = aws_iam_role.data_bucket.name
-  policy_arn = aws_iam_policy.data_release_bucket_writer.arn
+  role       = "${aws_iam_role.data_bucket.name}"
+  policy_arn = "${aws_iam_policy.data_release_bucket_writer.arn}"
 }
 
 

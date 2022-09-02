@@ -2,10 +2,10 @@
 ## The actual data bucket
 
 resource "aws_s3_bucket" "data_bucket" {
-  bucket = "${var.vpc_name}-data-release-bucket"
+  bucket = "${var.vpc_name}-data-bucket-with-versioning"
 
   tags = {
-    Name        = "${var.vpc_name}-data-release-bucket"
+    Name        = "${var.vpc_name}-data-bucket-with-versioning"
     Environment = "${var.environment}"
     Purpose     = "${var.purpose}"
   }
@@ -56,7 +56,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle_versioned" {
 
 #------------- LOGGING
 resource "aws_s3_bucket" "log_bucket" {
-  bucket = "${var.vpc_name}-data-release-bucket-log"
+  bucket = "${var.vpc_name}-data-bucket-with-versioning-log"
   tags = {
     Purpose = "data release s3 bucket log bucket"
   }
