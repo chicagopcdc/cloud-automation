@@ -25,7 +25,7 @@ EOF
 
 ## Policies data 
 
-data "aws_iam_policy_document" "data_release_bucket_reader" {
+data "aws_iam_policy_document" "data_bucket_with_versioning_reader" {
   statement {
     actions = [
       "s3:Get*",
@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "data_release_bucket_reader" {
   }
 }
 
-data "aws_iam_policy_document" "data_release_bucket_writer" {
+data "aws_iam_policy_document" "data_bucket_with_versioning_writer" {
   statement {
     actions = [
       "s3:PutObject"
@@ -52,30 +52,30 @@ data "aws_iam_policy_document" "data_release_bucket_writer" {
 
 ## Policies
 
-resource "aws_iam_policy" "data_release_bucket_reader" {
-  name        = "data_release_bucket_read_${var.vpc_name}"
+resource "aws_iam_policy" "data_bucket_with_versioning_reader" {
+  name        = "data_bucket_with_versioning_read_${var.vpc_name}"
   description = "Data Bucket access for ${var.vpc_name}"
-  policy      = "${data.aws_iam_policy_document.data_release_bucket_reader.json}"
+  policy      = "${data.aws_iam_policy_document.data_bucket_with_versioning_reader.json}"
 }
 
-resource "aws_iam_policy" "data_release_bucket_writer" {
-  name        = "data_release_bucket_write_${var.vpc_name}"
+resource "aws_iam_policy" "data_bucket_with_versioning_writer" {
+  name        = "data_bucket_with_versioning_write_${var.vpc_name}"
   description = "Data Bucket access for ${var.vpc_name}"
-  policy      = "${data.aws_iam_policy_document.data_release_bucket_writer.json}"
+  policy      = "${data.aws_iam_policy_document.data_bucket_with_versioning_writer.json}"
 }
 
 
 
 ## Policies attached to roles
 
-resource "aws_iam_role_policy_attachment" "data_release_bucket_reader" {
+resource "aws_iam_role_policy_attachment" "data_bucket_with_versioning_reader" {
   role       = "${aws_iam_role.data_bucket.name}"
-  policy_arn = "${aws_iam_policy.data_release_bucket_reader.arn}"
+  policy_arn = "${aws_iam_policy.data_bucket_with_versioning_reader.arn}"
 }
 
-resource "aws_iam_role_policy_attachment" "data_release_bucket_writer" {
+resource "aws_iam_role_policy_attachment" "data_bucket_with_versioning_writer" {
   role       = "${aws_iam_role.data_bucket.name}"
-  policy_arn = "${aws_iam_policy.data_release_bucket_writer.arn}"
+  policy_arn = "${aws_iam_policy.data_bucket_with_versioning_writer.arn}"
 }
 
 
