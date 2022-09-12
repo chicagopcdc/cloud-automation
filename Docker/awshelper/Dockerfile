@@ -22,10 +22,10 @@ RUN apt-get update && apt-get upgrade -y \
       libpq-dev \
       lsb-release \
       netcat-openbsd \
+      networkd-dispatcher \
       net-tools \
       openssh-client \
       openssh-server \
-      postgresql-client \
       python3 \
       python3-dev \
       python3-pip \
@@ -68,6 +68,12 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
     kubectl version --client && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /var/log/*
+
+# Install postgres 13 client
+RUN curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc| gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg && \
+    echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" | tee  /etc/apt/sources.list.d/pgdg.list && \
+    apt-get update && \
+    apt-get install -y postgresql-client-13
 
 RUN useradd -m -s /bin/bash ubuntu && \
     ( echo "ubuntu:gen3" | chpasswd )
