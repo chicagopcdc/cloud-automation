@@ -21,6 +21,9 @@
         "data_delivery_bucket_aws_key_id": "${amanuensis-bot_user_id}",
         "data_delivery_bucket_aws_access_key": "${amanuensis-bot_user_secret}"
     },
+    "gearbox": {
+        "gearbox_match_conditions_bucket_name": "${gearbox-match-conditions-bucket_name}"
+    },
     "sheepdog": {
         "fence_host": "${fence_host}",
         "fence_username": "${fence_user}",
