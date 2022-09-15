@@ -63,6 +63,10 @@ spec:
             GEN3_DEBUG_FLAG|-value: "False"-|
           - name: GEN3_ES_ENDPOINT
             value: http://esproxy-service:9200
+          - name: S3_BUCKET_KEY_NAME
+            value: "mc.json"
+          - name: AWS_REGION
+            value: "us-east-1"
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
