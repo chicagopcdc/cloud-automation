@@ -26,17 +26,16 @@ if [[ -f "$(gen3_secrets_folder)/creds.json" && -z "$JENKINS_HOME" ]]; then # cr
 fi
 
 # run db migration job - disable, because this still causes locking in dcf 
-# if false; then
-#   gen3_log_info "Launching db migrate job"
-#   gen3 job run amanuensis-db-migrate -w || true
-#   gen3 job logs amanuensis-db-migrate -f || true
-# fi
+if false; then
+  gen3_log_info "Launching db migrate job"
+  gen3 job run amanuensis-db-migrate -w || true
+  gen3 job logs amanuensis-db-migrate -f || true
+fi
 
 # deploy amanuensis
 gen3 roll amanuensis
 g3kubectl apply -f "${GEN3_HOME}/kube/services/amanuensis/amanuensis-service.yaml"
 
-# gen3 roll amanuensis-canary || true
 # g3kubectl apply -f "${GEN3_HOME}/kube/services/amanuensis/amanuensis-canary-service.yaml"
 gen3_log_info "The amanuensis service has been deployed onto the k8s cluster."
 

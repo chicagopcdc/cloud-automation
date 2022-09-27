@@ -1,0 +1,65 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: amanuensis-db-migrate
+spec:
+  template:
+    metadata:
+      labels:
+        app: gen3job
+    spec:
+      serviceAccountName: amanuensis-db-migrate-job
+      volumes:
+        - name: yaml-merge
+          configMap:
+            name: "amanuensis-yaml-merge"
+        - name: config-volume
+          secret:
+            secretName: "amanuensis-config"
+        - name: amanuensis-volume
+          secret:
+            secretName: "amanuensis-creds"
+        - name: tmp-pod
+          emptyDir: {}
+      containers:
+      - name: amanuensis
+        GEN3_AMANUENSIS_IMAGE
+        imagePullPolicy: Always
+        env:
+          - name: PYTHONPATH
+            value: /var/www/amanuensis
+          - name: AMANUENSIS_PUBLIC_CONFIG
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-amanuensis
+                key: amanuensis-config-public.yaml
+                optional: true
+        volumeMounts:
+          - name: "config-volume"
+            readOnly: true
+            mountPath: "/var/www/amanuensis/amanuensis-config-secret.yaml"
+            subPath: amanuensis-config.yaml
+          - name: "yaml-merge"
+            readOnly: true
+            mountPath: "/var/www/amanuensis/yaml_merge.py"
+            subPath: yaml_merge.py
+          - name: "amanuensis-volume"
+            readOnly: true
+            mountPath: "/var/www/amanuensis/creds.json"
+            subPath: creds.json
+          - mountPath: /tmp/pod
+            name: tmp-pod
+        command: ["/bin/bash"]
+        args:
+          - "-c"
+          - |
+            echo "${AMANUENSIS_PUBLIC_CONFIG:-""}" > "/var/www/amanuensis/amanuensis-config-public.yaml"
+            python /var/www/amanuensis/yaml_merge.py /var/www/amanuensis/amanuensis-config-public.yaml /var/www/amanuensis/amanuensis-config-secret.yaml > /var/www/amanuensis/amanuensis-config.yaml
+            cd /amanuensis
+            fence-create migrate
+            if [[ $? != 0 ]]; then
+              echo "WARNING: non zero exit code: $?"
+            fi
+            touch /tmp/pod/completed
+      restartPolicy: Never
