@@ -9,7 +9,7 @@ spec:
       labels:
         app: gen3job
     spec:
-      serviceAccountName: amanuensis-db-migrate-job
+      serviceAccountName: useryaml-job
       volumes:
         - name: yaml-merge
           configMap:
