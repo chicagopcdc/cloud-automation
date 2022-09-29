@@ -78,7 +78,7 @@ else:
     config['PATH_TO_SCHEMA_DIR'] = environ.get('PATH_TO_SCHEMA_DIR')
 
 config['SURVIVAL'] = {
-    'consortium': ["INSTRuCT"],
+    'consortium': ["INSTRuCT", "INRG"],
     'result': {
         'risktable': True,
         'survival': True
