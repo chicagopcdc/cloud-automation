@@ -38,14 +38,14 @@ run_setup_jobs() {
   # sheepdog wants its transaction tables to exist at startup
   # jobs run asynchronously ...
   #
-  for jobName in gdcdb-create indexd-userdb fence-db-migrate; do
+  for jobName in gdcdb-create indexd-userdb fence-db-migrate amanuensis-db-migrate; do
     gen3_log_info "Launching job $jobName"
     gen3 job run $jobName
   done
   gen3_log_info "Waiting for jobs to finish, and late starting services to come up"
   sleep 5
   gen3 kube-wait4-pods default true
-  for jobName in gdcdb-create indexd-userdb fence-db-migrate; do
+  for jobName in gdcdb-create indexd-userdb fence-db-migrate amanuensis-db-migrate; do
     gen3_log_info "--------------------"
     gen3_log_info "Logs for $jobName"
     gen3 job logs "$jobName"
