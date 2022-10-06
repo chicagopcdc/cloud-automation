@@ -1,5 +1,4 @@
 # id of AWS account that owns the public AMI's
-
 variable "ami_account_id" {
   # cdis-test
   default = "707767160287"
