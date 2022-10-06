@@ -1,3 +1,4 @@
+
 variable "rds_instance_create" {
   description = "Whether to create this resource or not?"
 #  type        = bool
@@ -190,6 +191,7 @@ variable "rds_instance_availability_zone" {
   default     = ""
 }
 
+
 variable "rds_instance_final_snapshot_identifier" {
   description = "The name of your final DB snapshot when this DB instance is deleted."
 #  type        = "string"
@@ -198,7 +200,7 @@ variable "rds_instance_final_snapshot_identifier" {
 
 variable "rds_instance_monitoring_role_arn" {
   description = "The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs. Must be specified if monitoring_interval is non-zero."
-#  type        = "string"ß
+#  type        = "string"
   default     = ""
 }
 
