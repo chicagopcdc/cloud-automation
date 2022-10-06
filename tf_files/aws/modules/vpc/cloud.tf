@@ -71,6 +71,12 @@ module "data-release-bucket" {
   environment          = "${var.vpc_name}"
 }
 
+module "gearbox-match-conditions-bucket" {
+  source               = "../data-bucket-with-versioning"
+  vpc_name             = "${var.vpc_name}"
+  environment          = "${var.vpc_name}"
+}
+
 module "amanuensis-bot-user" {
   source               = "../amanuensis-bot-user"
   vpc_name             = "${var.vpc_name}"

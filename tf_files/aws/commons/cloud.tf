@@ -104,6 +104,7 @@ module "config_files" {
   amanuensis-bot_user_secret  = "${module.cdis_vpc.amanuensis-bot_secret}"
   amanuensis-bot_user_id     = "${module.cdis_vpc.amanuensis-bot_id}"
   data-release-bucket_name   = "${module.cdis_vpc.data-release-bucket_name}"
+  gearbox-match-conditions-bucket_name = "${module.cdis_vpc.gearbox-match-conditions-bucket_name}"
 
   indexd_prefix               = "${var.indexd_prefix}"
 

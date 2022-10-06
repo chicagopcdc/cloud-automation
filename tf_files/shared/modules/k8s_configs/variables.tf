@@ -147,6 +147,7 @@ variable "indexd_prefix" {}
 variable "amanuensis-bot_user_secret" {}
 variable "amanuensis-bot_user_id" {}
 variable "data-release-bucket_name" {}
+variable "gearbox-match-conditions-bucket_name" {}
 
 ## Mailgun variable defaults/definitions.
 variable "mailgun_api_key" {}
