@@ -63,6 +63,9 @@ output "data-release-bucket_name" {
   value = "${module.cdis_vpc.data-release-bucket_name}"
 }
 
+output "gearbox-match-conditions-bucket_name" {
+  value = "${module.cdis_vpc.gearbox-match-conditions-bucket_name}"
+}
 
 #--------------------------------------------------------------
 # Legacy stuff ...
