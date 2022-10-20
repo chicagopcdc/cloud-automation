@@ -23,6 +23,8 @@
     },
     "gearbox": {
         "gearbox_match_conditions_bucket_name": "${gearbox-match-conditions-bucket_name}"
+        "gearbox_bucket_aws_key_id": "${gearbox-bot_user_id}",
+        "gearbox_bucket_aws_access_key": "${gearbox-bot_user_secret}"
     },
     "sheepdog": {
         "fence_host": "${fence_host}",

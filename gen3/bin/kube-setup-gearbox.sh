@@ -42,7 +42,8 @@ DB_DATABASE=$(jq -r .db_database < "$secretsFolder/dbcreds.json")
 
 # READ FROM $GEN3_SECRETS_HOME/creds.json & use jq to read
 S3_BUCKET_NAME=$(jq -r .gearbox.gearbox_match_conditions_bucket_name < "$GEN3_SECRETS_HOME/creds.json")
-
+S3_AWS_ACCESS_KEY_ID=$(jq -r .gearbox.gearbox_bucket_aws_key_id < "$GEN3_SECRETS_HOME/creds.json")
+S3_AWS_SECRET_ACCESS_KEY=$(jq -r .gearbox.gearbox_bucket_aws_access_key < "$GEN3_SECRETS_HOME/creds.json")
 
 ADMIN_LOGINS=gateway:$password
 EOM

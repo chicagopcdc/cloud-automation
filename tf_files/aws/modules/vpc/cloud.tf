@@ -84,6 +84,13 @@ module "amanuensis-bot-user" {
   bucket_access_arns   = "${var.amanuensis-bot_bucket_access_arns}"
 }
 
+module "gearbox-bot-user" {
+  source               = "../gearbox-bot-user"
+  vpc_name             = "${var.vpc_name}"
+  bucket_name          = "${module.gearbox-match-conditions-bucket.gearbox-match-conditions-bucket_name}"
+  bucket_access_arns   = "${var.gearbox-bot_bucket_access_arns}"
+}
+
 resource "aws_vpc" "main" {
   cidr_block           = "${var.vpc_cidr_block}"
 
