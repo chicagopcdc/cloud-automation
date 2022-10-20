@@ -63,8 +63,14 @@ spec:
             GEN3_DEBUG_FLAG|-value: "False"-|
           - name: GEN3_ES_ENDPOINT
             value: http://esproxy-service:9200
-          - name: S3_BUCKET_KEY_NAME
-            value: "mc.json"
+          - name: S3_BUCKET_MATCH_CONDITIONS_KEY_NAME
+            value: "match_conditions.json"
+          - name: S3_BUCKET_MATCH_FORM_KEY_NAME
+            value: "match_form.json"
+          - name: S3_BUCKET_STUDIES_KEY_NAME
+            value: "gearbox_studies.json"
+          - name: S3_BUCKET_ELIGIBILITY_CRITERIA_KEY_NAME
+            value: "eligibility_criteria.json"
           - name: AWS_REGION
             value: "us-east-1"
         imagePullPolicy: Always
