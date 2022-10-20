@@ -63,6 +63,14 @@ output "data-release-bucket_name" {
   value = "${module.cdis_vpc.data-release-bucket_name}"
 }
 
+output "gearbox-bot_user_secret" {
+  value = "${module.cdis_vpc.gearbox-bot_secret}"
+}
+
+output "gearbox-bot_user_id" {
+  value = "${module.cdis_vpc.gearbox-bot_id}"
+}
+
 output "gearbox-match-conditions-bucket_name" {
   value = "${module.cdis_vpc.gearbox-match-conditions-bucket_name}"
 }
