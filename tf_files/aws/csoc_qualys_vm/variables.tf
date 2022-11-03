@@ -15,7 +15,6 @@ variable "qualys_pub_subnet_routetable_id"{
 }
 
 # name of aws_key_pair ssh key to attach to VM's
-
 variable "ssh_key_name" {
   default = "rarya_id_rsa"
 }

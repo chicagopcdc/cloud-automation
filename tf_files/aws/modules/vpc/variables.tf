@@ -107,6 +107,12 @@ variable "amanuensis-bot_bucket_access_arns" {
   #default     = []
 }
 
+variable "gearbox-bot_bucket_access_arns" {
+  description = "When gearbox bot has to access another bucket that wasn't created by the VPC module"
+  type        = "list"
+  #default     = []
+}
+
 variable "deploy_ha_squid" {
   description = "should you want to deploy HA-squid"
   default     = false
