@@ -113,6 +113,11 @@ variable "gearbox-bot_bucket_access_arns" {
   #default     = []
 }
 
+variable "gearbox_allowed_origins" {
+  description = "value for CORS allowed origins for gearbox S3 bucket"
+  default = ""
+}
+
 variable "deploy_ha_squid" {
   description = "should you want to deploy HA-squid"
   default     = false

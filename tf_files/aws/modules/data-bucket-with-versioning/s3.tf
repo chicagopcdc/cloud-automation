@@ -52,3 +52,14 @@ resource "aws_s3_bucket_public_access_block" "data_bucket_privacy" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+#------------ CORS CONFIGURATION
+resource "aws_s3_bucket_cors_configuration" "gearbox_bucket_cors" {
+  bucket = aws_s3_bucket.data_bucket.id
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET","POST"]
+    allowed_origins = "${var.gearbox_allowed_origins}"
+    expose_headers = ["Access-Control-Allow-Origin","ETag","x-csrf-token","Content-Security-Policy"]
+  }
+}
