@@ -40,6 +40,7 @@ resource "aws_s3_bucket" "data_bucket" {
     allowed_methods = ["GET","POST"]
     allowed_origins = "${var.gearbox_allowed_origins}"
     expose_headers = ["Access-Control-Allow-Origin","ETag","x-csrf-token","Content-Security-Policy"]
+    max_age_seconds = 3000
   }
 
   tags = { 
