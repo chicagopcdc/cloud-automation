@@ -75,6 +75,10 @@ output "gearbox-match-conditions-bucket_name" {
   value = "${module.cdis_vpc.gearbox-match-conditions-bucket_name}"
 }
 
+output "gearbox_allowed_origins" {
+  value = "${var.gearbox_allowed_origins}"
+}
+
 #--------------------------------------------------------------
 # Legacy stuff ...
 # We want to move away from generating output files, and

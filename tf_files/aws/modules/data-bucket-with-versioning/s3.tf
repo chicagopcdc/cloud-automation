@@ -35,6 +35,14 @@ resource "aws_s3_bucket" "data_bucket" {
     target_prefix = "log/"
   }
 
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET","POST"]
+    allowed_origins = "${var.gearbox_allowed_origins}"
+    expose_headers = ["Access-Control-Allow-Origin","ETag","x-csrf-token","Content-Security-Policy"]
+    max_age_seconds = 3000
+  }
+
   tags = { 
     Name        = "${var.vpc_name}-data-bucket-with-versioning"
     Environment = "${var.environment}"
@@ -52,3 +60,4 @@ resource "aws_s3_bucket_public_access_block" "data_bucket_privacy" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
