@@ -75,6 +75,7 @@ module "gearbox-match-conditions-bucket" {
   source               = "../data-bucket-with-versioning"
   vpc_name             = "${var.vpc_name}"
   environment          = "${var.vpc_name}"
+  gearbox_allowed_origins = "${var.gearbox_allowed_origins}"
 }
 
 module "amanuensis-bot-user" {

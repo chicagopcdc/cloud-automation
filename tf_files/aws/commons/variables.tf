@@ -530,3 +530,9 @@ variable "customer_id" {
 variable "fips" {
   default = false
 }
+
+variable "gearbox_allowed_origins" {
+  description = "value for CORS allowed origins for gearbox S3 bucket"
+  type = "list"
+  default = []
+}

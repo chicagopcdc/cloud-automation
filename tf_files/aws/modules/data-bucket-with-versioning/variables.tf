@@ -16,3 +16,9 @@ variable "bucket_lifecycle_filter_prefix" {
 variable "noncurrent_version_expiration_days" {
   default = 180
 }
+
+variable "gearbox_allowed_origins" {
+  # value for CORS allowed origins for gearbox S3 bucket 
+  type = "list"
+  default = []
+}
