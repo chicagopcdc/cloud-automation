@@ -66,6 +66,7 @@ There are mandatory variables, and there are a few other optionals that are set 
 | squid_extra_vars | Additional variables to pass along with the bootstrapscript | list | [] |
 | fence-bot_bucket_access_arns | If Fence user needs to access an additional bucket as to what's created in this module | list | [] |
 | amanuensis-bot_bucket_access_arns | If Amanuensis user needs to access an additional bucket as to what's created in this module | list | [] |
+| gearbox-bot_bucket_access_arns | If Gearbox user needs to access an additional bucket as to what's created in this module | list | [] |
 | deploy_ha_squid | If you want the HA squid cluster | boolean | false |
 | squid_cluster_desired_capasity | If ha squid is enabled and you want to set your own capasity | int | 2 | 
 | squid_cluster_min_size | If ha squid is enabled and you want to set your own min size | int | 1 |
@@ -97,4 +98,6 @@ There are mandatory variables, and there are a few other optionals that are set 
 | data-bucket_name | Data bucket name |
 | amanuensis-bot_id | Amanuensis bot user ID |
 | amanuensis-bot_secret | Amanuensis bot user secret |
+| gearbox-bot_id | Gearbox bot user ID |
+| gearbox-bot_secret | Gearbox bot user secret |
 | data-bucket_name | Data bucket name |

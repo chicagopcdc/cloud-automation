@@ -71,11 +71,24 @@ module "data-release-bucket" {
   environment          = "${var.vpc_name}"
 }
 
+module "gearbox-match-conditions-bucket" {
+  source               = "../data-bucket-with-versioning"
+  vpc_name             = "${var.vpc_name}"
+  environment          = "${var.vpc_name}"
+}
+
 module "amanuensis-bot-user" {
   source               = "../amanuensis-bot-user"
   vpc_name             = "${var.vpc_name}"
   bucket_name          = "${module.data-release-bucket.data-release-bucket_name}"
   bucket_access_arns   = "${var.amanuensis-bot_bucket_access_arns}"
+}
+
+module "gearbox-bot-user" {
+  source               = "../gearbox-bot-user"
+  vpc_name             = "${var.vpc_name}"
+  bucket_name          = "${module.gearbox-match-conditions-bucket.data-bucket-with-versioning_name}"
+  bucket_access_arns   = "${var.gearbox-bot_bucket_access_arns}"
 }
 
 resource "aws_vpc" "main" {

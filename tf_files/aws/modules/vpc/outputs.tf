@@ -88,3 +88,15 @@ output "amanuensis-bot_secret" {
 output "data-release-bucket_name" {
   value = "${module.data-release-bucket.data-release-bucket_name}"
 }
+
+output "gearbox-bot_id" {
+  value = "${module.gearbox-bot-user.gearbox-bot_id}"
+}
+
+output "gearbox-bot_secret" {
+  value = "${module.gearbox-bot-user.gearbox-bot_secret}"
+}
+
+output "gearbox-match-conditions-bucket_name" {
+  value = "${module.gearbox-match-conditions-bucket.data-bucket-with-versioning_name}"
+}
