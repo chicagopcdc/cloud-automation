@@ -38,7 +38,8 @@ resource "aws_s3_bucket" "data_bucket" {
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET","POST"]
-    allowed_origins = "${var.gearbox_allowed_origins}"
+    # CORS requires the full URL including protocol so adding it here
+    allowed_origins = ["https://${element(var.gearbox_allowed_origins,0)}"]
     expose_headers = ["Access-Control-Allow-Origin","ETag","x-csrf-token","Content-Security-Policy"]
     max_age_seconds = 3000
   }
