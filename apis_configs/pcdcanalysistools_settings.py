@@ -85,6 +85,23 @@ config['SURVIVAL'] = {
     }
 }
 
+config['EXTERNAL'] = {
+    'commons': [
+        {
+            'label': 'Genomic Data Commons',
+            'value': 'gdc'
+        },
+        {
+            'label': 'Gabriella Miller Kids First',
+            'value': 'gmkf'
+        }
+    ], 
+    "commons_dict": {
+        "gdc": "TARGET - GDC", 
+        "gmkf": "GMKF"
+    }
+}
+
 app_init(app)
 application = app
 application.debug = (is_env_enabled('GEN3_DEBUG'))
