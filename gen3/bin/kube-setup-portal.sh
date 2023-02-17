@@ -55,4 +55,4 @@ dataUploadBucketName=$(gen3 secrets decode fence-config fence-config.yaml | yq -
 gearbox_s3_bucket=$(gen3 secrets decode portal-config gitops.json | jq .s3_bucket)
 g3kubectl apply -f "${GEN3_HOME}/kube/services/portal/portal-service.yaml"
 # gen3 roll portal GEN3_DATA_UPLOAD_BUCKET $dataUploadBucketName GEN3_GEARBOX_S3_BUCKET $gearbox_s3_bucket
-gen3 roll portal $([ -z ${dataUploadBucketName+x}" ] && echo "GEN3_DATA_UPLOAD_BUCKET $dataUploadBucketName " || echo "") $([ -z ${gearbox_s3_bucket+x}" ] && echo "GEN3_GEARBOX_S3_BUCKET $gearbox_s3_bucket " || echo "")
+gen3 roll portal $([ -z ${dataUploadBucketName+x} ] && echo "GEN3_DATA_UPLOAD_BUCKET $dataUploadBucketName " || echo "") $([ -z ${gearbox_s3_bucket+x} ] && echo "GEN3_GEARBOX_S3_BUCKET $gearbox_s3_bucket " || echo "")
