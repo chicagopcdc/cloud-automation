@@ -63,6 +63,29 @@ if ! setup_database; then
   exit 1
 fi
 
+if [[ -f "$(gen3_secrets_folder)/creds.json" ]]; then
+  echo "Creating gearbox portal configs and merging from $(gen3_secrets_folder)/creds.json"
+  S3_BUCKET_NAME=$(jq -r .gearbox.gearbox_match_conditions_bucket_name < "$GEN3_SECRETS_HOME/creds.json")
+  # Create gitops.json for gearbox frontend
+  hostname="$(gen3 api hostname)"
+  gitops_path="$HOME/cdis-manifest/$hostname/portal"
+  # create portal DIR if it doesn't exists
+  if [[ ! -d "$gitops_path" ]]; then
+    echo "Creating portal directory"
+    mkdir "$gitops_path"
+  fi
+  if [[ ! -f "$gitops_path/gitops.json" ]]; then
+    echo "Creating GEARBOx gitops.json"
+    touch "$gitops_path/gitops.json"
+    cat - > "$gitops_path/gitops.json" <<EOM
+{
+  "s3_bucket": "https://$S3_BUCKET_NAME.s3.amazonaws.com"
+}
+EOM
+  fi
+fi
+
+
 # The gearbox-config secret is a collection of arbitrary files at <manifest dir>/gearbox
 # Today, we only care about that secret if the directory exists. See gearbox-deploy and that
 # this secret will be marked as optional for the pod, so it is OK if this secret is not created.
