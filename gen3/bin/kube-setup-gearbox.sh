@@ -84,7 +84,6 @@ if [[ -f "$(gen3_secrets_folder)/creds.json" ]]; then
 EOM
   fi
 fi
-exit()
 
 
 # The gearbox-config secret is a collection of arbitrary files at <manifest dir>/gearbox
