@@ -15,10 +15,11 @@ spec:
     - key: karpenter.k8s.aws/instance-category
       operator: In
       values:
-      - c
-      - m
-      - r
-      - t       
+      - t    
+    - key: karpenter.k8s.aws/instance-generation
+      operator: Gt
+      values:
+      - "2"   
   # Set a limit of 1000 vcpus
   limits:
     resources:

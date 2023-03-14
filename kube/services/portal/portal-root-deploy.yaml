@@ -37,6 +37,13 @@ spec:
           - weight: 100
             preference:
               matchExpressions:
+              - key: karpenter.sh/capacity-type
+                operator: In
+                values:
+                - on-demand
+          - weight: 99
+            preference:
+              matchExpressions:
               - key: eks.amazonaws.com/capacityType
                 operator: In
                 values:
@@ -80,12 +87,8 @@ spec:
           failureThreshold: 10
         resources:
           requests:
-            cpu: 0.6
-            memory: 512Mi
-          limits:
-            # portal pigs out on resources at startup, then settles down
-            cpu: 2
-            memory: 4096Mi
+            cpu: 1
+            memory: 1Gi
         ports:
         - containerPort: 80
         - containerPort: 443
@@ -196,6 +199,9 @@ spec:
           - name: DATA_UPLOAD_BUCKET
             # S3 bucket name for data upload, for setting up CSP
             GEN3_DATA_UPLOAD_BUCKET|-value: ""-|
+          - name: GEARBOX_S3_BUCKET
+            # S3 bucket name for match conditions files, for setting up CSP
+            GEN3_GEARBOX_S3_BUCKET|-value: ""-|
         volumeMounts:
           - name: "cert-volume"
             readOnly: true
