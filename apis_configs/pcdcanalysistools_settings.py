@@ -46,27 +46,28 @@ config['PSQL_USER_DB_CONNECTION'] = 'postgresql://%s:%s@%s:5432/%s' % tuple([con
     key, key) for key in ['fence_username', 'fence_password', 'fence_host', 'fence_database']])
 config['OIDC_ISSUER'] = 'https://%s/user' % conf_data['hostname']
 
-config['OAUTH2'] = {
-    'client_id': conf_data.get('oauth2_client_id', '{{oauth2_client_id}}'),
-    'client_secret': conf_data.get('oauth2_client_secret', '{{oauth2_client_secret}}'),
-    'api_base_url': 'https://%s/user/' % conf_data['hostname'],
-    'authorize_url': 'https://%s/user/oauth2/authorize' % conf_data['hostname'],
-    'access_token_url': 'https://%s/user/oauth2/token' % conf_data['hostname'],
-    'refresh_token_url': 'https://%s/user/oauth2/token' % conf_data['hostname'],
-    'client_kwargs': {
-        'redirect_uri': 'https://%s/api/v0/oauth2/authorize' % conf_data['hostname'],
-        'scope': 'openid data user',
+config["OAUTH2"] = {
+    "client_id": conf_data.get("oauth2_client_id", "{{oauth2_client_id}}"),
+    "client_secret": conf_data.get("oauth2_client_secret", "{{oauth2_client_secret}}"),
+    "api_base_url": "https://%s/user/" % conf_data["hostname"],
+    "authorize_url": "https://%s/user/oauth2/authorize" % conf_data["hostname"],
+    "access_token_url": "https://%s/user/oauth2/token" % conf_data["hostname"],
+    "refresh_token_url": "https://%s/user/oauth2/token" % conf_data["hostname"],
+    "client_kwargs": {
+        "redirect_uri": "https://%s/api/v0/oauth2/authorize" % conf_data["hostname"],
+        "scope": "openid data user",
     },
     # deprecated key values, should be removed after all commons use new oidc
-    'internal_oauth_provider': 'http://fence-service/oauth2/',
-    'oauth_provider': 'https://%s/user/oauth2/' % conf_data['hostname'],
-    'redirect_uri': 'https://%s/api/v0/oauth2/authorize' % conf_data['hostname']
+    "internal_oauth_provider": "http://fence-service/oauth2/",
+    "oauth_provider": "https://%s/user/oauth2/" % conf_data["hostname"],
+    "redirect_uri": "https://%s/api/v0/oauth2/authorize" % conf_data["hostname"],
 }
 
 # trailing slash intentionally omitted
 config['GUPPY_API'] = 'http://guppy-service'
 
-config['USER_API'] = 'http://fence-service/'
+config["USER_API"] = config["OIDC_ISSUER"]  # for use by authutils
+# config['USER_API'] = 'http://fence-service/'
 # option to force authutils to prioritize USER_API setting over the issuer from
 # token when redirecting, used during local docker compose setup when the
 # services are on different containers but the hostname is still localhost
