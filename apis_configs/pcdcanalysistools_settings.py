@@ -3,48 +3,53 @@ from os import environ
 import config_helper
 from pcdcutils.environment import is_env_enabled
 
-APP_NAME = 'PcdcAnalysisTools'
-
-
+APP_NAME='PcdcAnalysisTools'
 def load_json(file_name):
     return config_helper.load_json(file_name, APP_NAME)
 
 
-conf_data = load_json('creds.json')
+conf_data = load_json("creds.json")
 config = app.config
 
 config['SERVICE_NAME'] = 'pcdcanalysistools'
 config['PRIVATE_KEY_PATH'] = "/var/www/PcdcAnalysisTools/jwt_private_key.pem"
 
-config["AUTH"] = 'https://auth.service.consul:5000/v3/'
+config["AUTH"] = "https://auth.service.consul:5000/v3/"
 config["AUTH_ADMIN_CREDS"] = None
 config["INTERNAL_AUTH"] = None
 
-# SIGNPOST is deprecated, replaced by INDEX_CLIENT (sheepdog>=1.1.12)
-config['SIGNPOST'] = {
-    'host': environ.get('SIGNPOST_HOST', 'http://indexd-service'),
-    'version': 'v0',
-    'auth': ('indexd_client', conf_data.get('indexd_password', '{{indexd_password}}')),
+# ARBORIST deprecated, replaced by ARBORIST_URL
+# ARBORIST_URL is initialized in app_init() directly
+config["ARBORIST"] = "http://arborist-service/"
+
+# Signpost: deprecated, replaced by index client.
+config["SIGNPOST"] = {
+    "host": environ.get("SIGNPOST_HOST") or "http://indexd-service",
+    "version": "v0",
+    "auth": ("gdcapi", conf_data.get("indexd_password", "{{indexd_password}}")),
 }
 config["INDEX_CLIENT"] = {
-    'host': environ.get('INDEX_CLIENT_HOST', 'http://indexd-service'),
-    'version': 'v0',
-    'auth': ('indexd_client', conf_data.get('indexd_password', '{{indexd_password}}')),
+    "host": environ.get("INDEX_CLIENT_HOST") or "http://indexd-service",
+    "version": "v0",
+    "auth": ("gdcapi", conf_data.get("indexd_password", "{{indexd_password}}")),
 }
 config["FAKE_AUTH"] = False
 config["PSQLGRAPH"] = {
-    'host': conf_data['db_host'],
-    'user': conf_data['db_username'],
-    'password': conf_data['db_password'],
-    'database': conf_data['db_database'],
+    "host": conf_data["db_host"],
+    "user": conf_data["db_username"],
+    "password": conf_data["db_password"],
+    "database": conf_data["db_database"],
 }
 
-config['HMAC_ENCRYPTION_KEY'] = conf_data.get('hmac_key', '{{hmac_key}}')
-config['FLASK_SECRET_KEY'] = conf_data.get(
-    'gdcapi_secret_key', '{{gdcapi_secret_key}}')
-config['PSQL_USER_DB_CONNECTION'] = 'postgresql://%s:%s@%s:5432/%s' % tuple([conf_data.get(
-    key, key) for key in ['fence_username', 'fence_password', 'fence_host', 'fence_database']])
-config['OIDC_ISSUER'] = 'https://%s/user' % conf_data['hostname']
+config["HMAC_ENCRYPTION_KEY"] = conf_data.get("hmac_key", "{{hmac_key}}")
+config["FLASK_SECRET_KEY"] = conf_data.get("gdcapi_secret_key", "{{gdcapi_secret_key}}")
+config["PSQL_USER_DB_CONNECTION"] = "postgresql://%s:%s@%s:5432/%s" % tuple(
+    [
+        conf_data.get(key, key)
+        for key in ["fence_username", "fence_password", "fence_host", "fence_database"]
+    ]
+)
+config["OIDC_ISSUER"] = "https://%s/user" % conf_data["hostname"]
 
 config["OAUTH2"] = {
     "client_id": conf_data.get("oauth2_client_id", "{{oauth2_client_id}}"),
@@ -80,7 +85,21 @@ else:
 
 config['SURVIVAL'] = {
     'consortium': ["INSTRuCT", "INRG"],
-    'excluded_variables': ["data_contributor_id", "treatment_arm", "studies.study_id"],
+    'excluded_variables': [
+        {
+            'label': 'Data Contributor',
+            'field': 'data_contributor_id',
+        },
+        {
+            'label': 'Study',
+            'field': 'studies.study_id',
+        },
+        {
+            'label': 'Treatment Arm',
+            'field': 'studies.treatment_arm',
+        }
+    ],
+
     'result': {
         'risktable': True,
         'survival': True
