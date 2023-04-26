@@ -250,10 +250,11 @@ spec:
             subPath: "jwt_public_key.pem"          
         resources:
             requests:
-              cpu: 100m
-              memory: 500Mi
+              cpu: 0.4
+              memory: 1200Mi
             limits:
-              memory: 1024Mi
+              cpu: 1.0
+              memory: 2400Mi
         command: ["/bin/bash"]
         args:
           - "-c"
