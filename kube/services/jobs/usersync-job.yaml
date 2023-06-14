@@ -131,7 +131,7 @@ spec:
             valueFrom:
                 configMapKeyRef:
                   name: global
-                  key: environment
+                  key: hostname
           - name: FENCE_PUBLIC_CONFIG
             valueFrom:
               configMapKeyRef:
@@ -300,7 +300,7 @@ spec:
             valueFrom:
               configMapKeyRef:
                 name: global
-                key: environment
+                key: hostname
           - name: slackWebHook
             valueFrom:
               configMapKeyRef:

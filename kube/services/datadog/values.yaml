@@ -10,6 +10,9 @@ datadog:
     useHostPort: true
     nonLocalTraffic: true
 
+  #This is used to configure a lot of checks that Datadog does. Normally, we would annotate a service, but since we
+  #use aurora, we'll have to configure from confd instead
+
   #Enables Optional Universal Service Monitoring
   ## ref: https://docs.datadoghq.com/tracing/universal_service_monitoring/?tab=helm
   serviceMonitoring:
@@ -200,9 +203,9 @@ datadog:
   ## ref: https://docs.datadoghq.com/agent/kubernetes/prometheus/
   prometheusScrape:
     # datadog.prometheusScrape.enabled -- Enable autodiscovering pods and services exposing prometheus metrics.
-    enabled: true
+    enabled: false
     # datadog.prometheusScrape.serviceEndpoints -- Enable generating dedicated checks for service endpoints.
-    serviceEndpoints: true
+    serviceEndpoints: false
     # datadog.prometheusScrape.additionalConfigs -- Allows adding advanced openmetrics check configurations with custom discovery rules. (Requires Agent version 7.27+)
     additionalConfigs: []
       # -
