@@ -125,6 +125,12 @@ spec:
                 name: manifest-global
                 key: workspace_timeout_in_minutes
                 optional: true
+          - name: DICTIONARY_URL
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: dictionary_url
+                optional: true
           - name: TIER_ACCESS_LEVEL
             valueFrom:
               configMapKeyRef:
