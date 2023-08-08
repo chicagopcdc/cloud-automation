@@ -2,7 +2,6 @@
 #------------- LOGGING
 resource "aws_s3_bucket" "log_bucket" {
   bucket = "${var.vpc_name}-data-bucket-with-versioning-log"
-  acl = "log-delivery-write"
   tags = {
     Purpose = "s3 bucket log bucket"
   }
@@ -10,7 +9,6 @@ resource "aws_s3_bucket" "log_bucket" {
 
 resource "aws_s3_bucket" "data_bucket" {
   bucket = "${var.vpc_name}-data-bucket-with-versioning"
-  acl = "private"
   versioning {
     enabled = true
   }
