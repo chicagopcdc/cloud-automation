@@ -291,19 +291,19 @@ variable "indexd_backup_window" {
 }
 
 variable "fence_engine_version" {
-  default = "13.3" 
+  default = "13.7" 
 }
 
 variable "amanuensis_engine_version" {
-  default = "13.3" 
+  default = "13.7" 
 }
 
 variable "sheepdog_engine_version" {
-  default = "13.3"
+  default = "13.7"
 }
 
 variable "indexd_engine_version" {
-  default = "13.3" 
+  default = "13.7" 
 }
 
 variable "fence_auto_minor_version_upgrade" {
