@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gearbox-middleware-deployment
+spec:
+  selector:
+    # Only select pods based on the 'app' label  
+    matchLabels:
+      app: gearbox-middleware
+      release: production
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: gearbox-middleware
+        release: production
+        public: "yes"
+        GEN3_DATE_LABEL 
+    spec:
+      volumes:
+      - name: gearbox-jwt-keys
+        secret:
+          secretName: "gearbox-jwt-keys-g3auto"
+          items:
+            - key: jwt_private_key.pem
+              path: jwt_private_key.pem
+      - name: config-volume
+        secret:
+          secretName: "gearbox-middle-g3auto"
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 25
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - gearbox-middleware
+              topologyKey: "kubernetes.io/hostname"
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: eks.amazonaws.com/capacityType
+                operator: In
+                values:
+                - SPOT
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 50
+      containers:
+        - name: gearbox-middleware
+          GEN3_GEARBOX-MIDDLEWARE_IMAGE
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: "gearbox-jwt-keys"
+              readOnly: true 
+              mountPath: "gearbox_middleware/gearbox_middleware/keys/jwt_private_key.pem"
+              subPath: jwt_private_key.pem
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/gearbox_middleware/.env"
+              subPath: gearbox.env
+          livenessProbe:
+            httpGet:
+              path: /_status?timeout=20
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /_status?timeout=2
+              port: 80
+          ports:
+          - containerPort: 80
+          - containerPort: 443
+          resources:
+            requests:
+              cpu: 0.8
+              memory: 1024Mi
+            limits:
+              cpu: 2
+              memory: 2048Mi
