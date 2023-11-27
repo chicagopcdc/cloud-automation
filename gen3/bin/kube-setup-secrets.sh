@@ -200,7 +200,7 @@ if ! g3kubectl get configmaps/fence > /dev/null 2>&1; then
 fi
 
 # Generate private and public keys for each service listed (except fence)
-services_list=( "analysis" "amanuensis", "gearbox" )
+services_list=( "analysis" "amanuensis", "gearbox-middleware" )
 
 # make directories for temporary credentials
 timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")

@@ -127,12 +127,6 @@ else
   gen3_log_info "not deploying pcdcanalysistools - no manifest entry for .versions.pcdcanalysistools"
 fi
 
-if g3k_manifest_lookup .versions.gearbox-middleware 2> /dev/null; then
-  gen3 kube-setup-gearbox-middleware &
-else
-  gen3_log_info "not deploying gearbox-middleware - no manifest entry for .versions.gearbox-middleware"
-fi
-
 if g3k_manifest_lookup .versions.peregrine 2> /dev/null; then
   gen3 kube-setup-peregrine &
 else

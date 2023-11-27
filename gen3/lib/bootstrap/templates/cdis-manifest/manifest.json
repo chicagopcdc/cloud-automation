@@ -25,7 +25,7 @@
     "spark": "quay.io/cdis/gen3-spark:2020.03",
     "wts": "quay.io/cdis/workspace-token-service:2020.03",
     "tube": "quay.io/cdis/tube:2020.03",
-    "gearbox-middlware": "quay.io/pcdc/GEAR-358"
+    "gearbox-middleware": "quay.io/pcdc/GEAR-358"
   },
   "arborist": {
     "deployment_version": "2"

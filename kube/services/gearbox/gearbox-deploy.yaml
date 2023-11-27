@@ -49,9 +49,9 @@ spec:
                 - SPOT  
       automountServiceAccountToken: false
       volumes:
-        - name: gearbox-jwt-keys
+        - name: gearbox-middleware-jwt-keys
           secret:
-            secretName: "gearbox-jwt-keys-g3auto"
+            secretName: "gearbox-middleware-jwt-keys-g3auto"
             items:
               - key: jwt_public_key.pem
                 path: jwt_public_key.pem
@@ -95,7 +95,7 @@ spec:
         ports:
         - containerPort: 80
         volumeMounts:
-          - name: "gearbox-jwt-keys"
+          - name: "gearbox-middleware-jwt-keys"
             readOnly: true
             mountPath: "/src/src/gearbox/keys/jwt_public_key.pem"
             subPath: jwt_public_key.pem

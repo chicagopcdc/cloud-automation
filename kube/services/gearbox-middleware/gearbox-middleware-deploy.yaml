@@ -23,15 +23,16 @@ spec:
         GEN3_DATE_LABEL 
     spec:
       volumes:
-      - name: gearbox-jwt-keys
+      - name: gearbox-middleware-jwt-keys
         secret:
-          secretName: "gearbox-jwt-keys-g3auto"
+          secretName: "gearbox-middleware-jwt-keys-g3auto"
           items:
             - key: jwt_private_key.pem
               path: jwt_private_key.pem
       - name: config-volume
         secret:
-          secretName: "gearbox-middle-g3auto"
+          secretName: "gearbox-middleware-g3auto"
+          optional: true
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -60,14 +61,14 @@ spec:
           GEN3_GEARBOX-MIDDLEWARE_IMAGE
           imagePullPolicy: Always
           volumeMounts:
-            - name: "gearbox-jwt-keys"
+            - name: "gearbox-middleware-jwt-keys"
               readOnly: true 
               mountPath: "gearbox_middleware/gearbox_middleware/keys/jwt_private_key.pem"
               subPath: jwt_private_key.pem
             - name: "config-volume"
               readOnly: true
               mountPath: "/gearbox_middleware/.env"
-              subPath: gearbox.env
+              subPath: gearbox-middleware.env
           livenessProbe:
             httpGet:
               path: /_status?timeout=20
