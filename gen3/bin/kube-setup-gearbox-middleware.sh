@@ -37,6 +37,14 @@ if ! setup_gearbox_middle; then
   exit 1
 fi
 
+if [ -d "$(dirname $(g3k_manifest_path))/gearbox-middlware" ]; then
+  if g3kubectl get secrets gearbox-middleware-config > /dev/null 2>&1; then
+    # We want to re-create this on every setup to pull the latest state.
+    g3kubectl delete secret gearbox-middleware-config
+  fi
+fi
+
+gen3 gitops configmaps
 
 gen3 roll gearbox-middleware
 g3kubectl apply -f "${GEN3_HOME}/kube/services/gearbox-middleware/gearbox-middlware-service.yaml"
@@ -47,4 +55,4 @@ if [[ -z "$GEN3_ROLL_ALL" ]]; then
 fi
 
 gen3_log_info "The gearbox service has been deployed onto the kubernetes cluster"
-gen3_log_info "test with: curl https://commons-host/gearbox-match/_status"
+gen3_log_info "test with: curl https://commons-host/gearbox-middleware/_status"

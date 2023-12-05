@@ -33,6 +33,12 @@ spec:
         secret:
           secretName: "gearbox-middleware-g3auto"
           optional: true
+      # This volume may or may not be needed or available. See kube-setup-gearbox.sh and note that this
+      # is only available if a <manifest dir>/gearbox directory exists.
+      - name: config-volume
+        secret:
+          secretName: gearbox-middleware-config
+          optional: true
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -69,6 +75,10 @@ spec:
               readOnly: true
               mountPath: "/gearbox_middleware/.env"
               subPath: gearbox-middleware.env
+            - name: config-volume
+              readOnly: true
+              mountPath: /aggregate_config.json
+              subPath: aggregate_config.json
           livenessProbe:
             httpGet:
               path: /_status?timeout=20
