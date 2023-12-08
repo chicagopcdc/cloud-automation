@@ -13,8 +13,11 @@ setup_gearbox_middle() {
     return 0
   fi
   
+
   if [[ ! -f "$secretsFolder/gearbox-middleware.env" || ! -f "$secretsFolder/base64Authz.txt" ]]; then
     local secretsFolder="$(gen3_secrets_folder)/g3auto/gearbox-middleware"
+
+    mkdir -m 0700 -p "$secretsFolder"
     # go ahead and rotate the password whenever we regen this file
     local password="$(gen3 random)"
     cat - > "$secretsFolder/gearbox-middleware.env" <<EOM
