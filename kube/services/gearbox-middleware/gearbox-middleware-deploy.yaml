@@ -29,7 +29,7 @@ spec:
           items:
             - key: jwt_private_key.pem
               path: jwt_private_key.pem
-      - name: config-volume
+      - name: config-volume-g3auto
         secret:
           secretName: "gearbox-middleware-g3auto"
           optional: true
@@ -71,7 +71,7 @@ spec:
               readOnly: true 
               mountPath: "gearbox_middleware/gearbox_middleware/keys/jwt_private_key.pem"
               subPath: jwt_private_key.pem
-            - name: "config-volume"
+            - name: config-volume-g3auto
               readOnly: true
               mountPath: "/gearbox_middleware/.env"
               subPath: gearbox-middleware.env
