@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gearbox-middleware-deployment
+spec:
+  selector:
+    # Only select pods based on the 'app' label  
+    matchLabels:
+      app: gearbox-middleware
+      release: production
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: gearbox-middleware
+        release: production
+        public: "yes"
+        GEN3_DATE_LABEL 
+    spec:
+      volumes:
+      - name: gearbox-middleware-jwt-keys
+        secret:
+          secretName: "gearbox-middleware-jwt-keys-g3auto"
+          items:
+            - key: jwt_private_key.pem
+              path: jwt_private_key.pem
+      - name: config-volume-g3auto
+        secret:
+          secretName: "gearbox-middleware-g3auto"
+          optional: true
+      # This volume may or may not be needed or available. See kube-setup-gearbox.sh and note that this
+      # is only available if a <manifest dir>/gearbox directory exists.
+      - name: config-volume
+        secret:
+          secretName: gearbox-middleware-config
+          optional: true
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 25
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - gearbox-middleware
+              topologyKey: "kubernetes.io/hostname"
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: eks.amazonaws.com/capacityType
+                operator: In
+                values:
+                - SPOT
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 50
+      containers:
+        - name: gearbox-middleware
+          GEN3_GEARBOX-MIDDLEWARE_IMAGE
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: "gearbox-middleware-jwt-keys"
+              readOnly: true 
+              mountPath: "gearbox_middleware/gearbox_middleware/keys/jwt_private_key.pem"
+              subPath: jwt_private_key.pem
+            - name: config-volume-g3auto
+              readOnly: true
+              mountPath: "/gearbox_middleware/.env"
+              subPath: gearbox-middleware.env
+            - name: config-volume
+              readOnly: true
+              mountPath: /aggregate_config.json
+              subPath: aggregate_config.json
+          livenessProbe:
+            httpGet:
+              path: /_status?timeout=20
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /_status?timeout=2
+              port: 80
+          ports:
+          - containerPort: 80
+          - containerPort: 443
+          resources:
+            requests:
+              cpu: 0.8
+              memory: 1024Mi
+            limits:
+              cpu: 2
+              memory: 2048Mi
