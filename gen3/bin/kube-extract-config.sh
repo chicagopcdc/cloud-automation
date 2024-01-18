@@ -248,7 +248,8 @@ cat - > creds.json <<EOM
         "db_username": "indexd_user",
         "db_password": "${indexdDbPassword}",
         "db_database": "${indexdDbSchema}"
-    }
+    },
+    "gearbox-middleware": {}
 }
 EOM
 
