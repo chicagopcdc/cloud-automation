@@ -84,7 +84,7 @@ else:
     config['PATH_TO_SCHEMA_DIR'] = environ.get('PATH_TO_SCHEMA_DIR')
 
 config['SURVIVAL'] = {
-    'consortium': ["INSTRuCT", "INRG", "MaGIC", "NODAL"],
+    'consortium': ["INSTRuCT", "INRG", "MaGIC", "NODAL", "INTERACT"],
     'excluded_variables': [
         {
             'label': 'Data Contributor',
