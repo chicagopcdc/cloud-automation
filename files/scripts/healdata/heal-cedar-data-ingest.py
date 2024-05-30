@@ -74,7 +74,9 @@ def is_valid_uuid(uuid_to_test, version=4):
 
 
 def update_filter_metadata(metadata_to_update):
-    filter_metadata = []
+    # Retain these from existing filters
+    save_filters = ["Common Data Elements"]
+    filter_metadata = [filter for filter in metadata_to_update["advSearchFilters"] if filter["key"] in save_filters]
     for metadata_field_key, filter_field_key in FILTER_FIELD_MAPPINGS.items():
         filter_field_values = pydash.get(metadata_to_update, metadata_field_key)
         if filter_field_values:
@@ -97,7 +99,7 @@ def update_filter_metadata(metadata_to_update):
     filter_metadata = pydash.uniq(filter_metadata)
     metadata_to_update["advSearchFilters"] = filter_metadata
     # Retain these from existing tags
-    save_tags = ["Data Repository"]
+    save_tags = ["Data Repository", "Common Data Elements"]
     tags = [tag for tag in metadata_to_update["tags"] if tag["category"] in save_tags]
     # Add any new tags from advSearchFilters
     for f in metadata_to_update["advSearchFilters"]:
@@ -227,24 +229,24 @@ while limit + offset <= total:
         returned_records = len(metadata_return["metadata"]["records"])
         print(f"Successfully got {returned_records} record(s) from CEDAR directory")
         for cedar_record in metadata_return["metadata"]["records"]:
-            # get the appl id from cedar for querying in our MDS
-            cedar_appl_id = pydash.get(
-                cedar_record, "metadata_location.nih_application_id"
+            # get the CEDAR instance id from cedar for querying in our MDS
+            cedar_instance_id = pydash.get(
+                cedar_record, "metadata_location.cedar_study_level_metadata_template_instance_ID"
             )
-            if cedar_appl_id is None:
-                print("This record doesn't have appl_id, skipping...")
+            if cedar_instance_id is None:
+                print("This record doesn't have CEDAR instance id, skipping...")
                 continue
 
-            # Get the metadata record for the nih_application_id
+            # Get the metadata record for the CEDAR instance id
             mds = requests.get(
-                f"http://revproxy-service/mds/metadata?gen3_discovery.study_metadata.metadata_location.nih_application_id={cedar_appl_id}&data=true"
+                f"http://revproxy-service/mds/metadata?gen3_discovery.study_metadata.metadata_location.cedar_study_level_metadata_template_instance_ID={cedar_instance_id}&data=true"
             )
             if mds.status_code == 200:
                 mds_res = mds.json()
 
                 # the query result key is the record of the metadata. If it doesn't return anything then our query failed.
                 if len(list(mds_res.keys())) == 0 or len(list(mds_res.keys())) > 1:
-                    print("Query returned nothing for", cedar_appl_id, "appl id")
+                    print(f"Query returned nothing for template_instance_ID={cedar_instance_id}&data=true")
                     continue
 
                 # get the key for our mds record
@@ -394,3 +396,6 @@ while limit + offset <= total:
     offset = offset + limit
     if (offset + limit) > total:
         limit = total - offset
+
+    if limit < 0:
+        break
