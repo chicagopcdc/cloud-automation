@@ -65,7 +65,7 @@ fi
 
 if [[ -f "$(gen3_secrets_folder)/creds.json" ]]; then
   echo "Creating gearbox portal configs and merging from $(gen3_secrets_folder)/creds.json"
-  S3_BUCKET_NAME=$(jq -r .gearbox.gearbox_match_conditions_bucket_name < "$(gen3_secrets_folder)/creds.json")
+  S3_BUCKET_NAME=$(jq -r .gearbox-aws.gearbox_match_conditions_bucket_name < "$(gen3_secrets_folder)/creds.json")
   # Create gitops.json for gearbox frontend
   hostname="$(gen3 api hostname)"
   gitops_path="$HOME/cdis-manifest/$hostname/portal"
