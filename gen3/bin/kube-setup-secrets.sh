@@ -305,40 +305,44 @@ if ! g3kubectl get secrets/fence-google-storage-creds-secret > /dev/null 2>&1; t
 fi
 
 # amanuensis-config secret
-if ! g3kubectl get secrets/amanuensis-config > /dev/null 2>&1; then
-  # load updated amanuensis-config.yaml into secret if it exists
-  amanuensis_config=$(gen3_secrets_folder)/apis_configs/amanuensis-config.yaml
-  if [[ -f ${amanuensis_config} ]]; then
-    echo "loading amanuensis config from file..."
-    if g3kubectl get secrets/amanuensis-config > /dev/null 2>&1; then
-      g3kubectl delete secret amanuensis-config
-    fi
-    g3kubectl create secret generic amanuensis-config "--from-file=amanuensis-config.yaml=${amanuensis_config}" "--from-file=${GEN3_HOME}/apis_configs/config_helper.py"
-  else
-    echo "running job to create amanuensis-config.yaml."
-    echo "job will inject creds.json into amanuensis-config.yaml..."
-    echo "NOTE: Some default config values from amanuensis-config.yaml will be replaced"
-    echo "      Run \"gen3 joblogs config-amanuensis\" for details"
-    gen3 job run config-amanuensis CONVERT_OLD_CFG "true"
-
-    # dump amanuensis-config secret into file so user can edit.
-    let count=1
-    while ((count < 50)); do
+if g3k_manifest_lookup .versions.amanuensis 2> /dev/null; then
+  if ! g3kubectl get secrets/amanuensis-config > /dev/null 2>&1; then
+    # load updated amanuensis-config.yaml into secret if it exists
+    amanuensis_config=$(gen3_secrets_folder)/apis_configs/amanuensis-config.yaml
+    if [[ -f ${amanuensis_config} ]]; then
+      echo "loading amanuensis config from file..."
       if g3kubectl get secrets/amanuensis-config > /dev/null 2>&1; then
-        break
+        g3kubectl delete secret amanuensis-config
       fi
-      echo "waiting for amanuensis-config secret from job..."
-      sleep 2
-      let count=${count}+1
-    done
-    if g3kubectl get secrets/amanuensis-config > /dev/null 2>&1; then
-      echo "found amanuensis-config!"
-      echo "dumping amanuensis configuration into file from amanuensis-config secret..."
-      g3kubectl get secrets/amanuensis-config -o json | jq -r '.data["amanuensis-config.yaml"]' | base64 --decode > "${amanuensis_config}"
+      g3kubectl create secret generic amanuensis-config "--from-file=amanuensis-config.yaml=${amanuensis_config}" "--from-file=${GEN3_HOME}/apis_configs/config_helper.py"
     else
-      echo "ERROR: could not find amanuensis-config within the timeout!"
+      echo "running job to create amanuensis-config.yaml."
+      echo "job will inject creds.json into amanuensis-config.yaml..."
+      echo "NOTE: Some default config values from amanuensis-config.yaml will be replaced"
+      echo "      Run \"gen3 joblogs config-amanuensis\" for details"
+      gen3 job run config-amanuensis CONVERT_OLD_CFG "true"
+
+      # dump amanuensis-config secret into file so user can edit.
+      let count=1
+      while ((count < 50)); do
+        if g3kubectl get secrets/amanuensis-config > /dev/null 2>&1; then
+          break
+        fi
+        echo "waiting for amanuensis-config secret from job..."
+        sleep 2
+        let count=${count}+1
+      done
+      if g3kubectl get secrets/amanuensis-config > /dev/null 2>&1; then
+        echo "found amanuensis-config!"
+        echo "dumping amanuensis configuration into file from amanuensis-config secret..."
+        g3kubectl get secrets/amanuensis-config -o json | jq -r '.data["amanuensis-config.yaml"]' | base64 --decode > "${amanuensis_config}"
+      else
+        echo "ERROR: could not find amanuensis-config within the timeout!"
+      fi
     fi
   fi
+else
+  gen3_log_info "no manifest entry for amanuensis, skipping amanuensis config setup"
 fi
 
 if ! g3kubectl get configmaps/projects > /dev/null 2>&1; then
