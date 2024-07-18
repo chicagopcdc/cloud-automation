@@ -31,7 +31,7 @@ setup_database() {
       return 1
     fi
 
-    if g3k_config_lookup '.gearbox.enable_phi' 2> /dev/null; then
+    if g3k_config_lookup '.global.enable_phi' 2> /dev/null; then
       ENABLE_PHI=True
     else
       ENABLE_PHI=False
