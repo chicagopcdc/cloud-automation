@@ -193,6 +193,12 @@ spec:
                 name: manifest-global
                 key: privacy_policy_url
                 optional: true
+          - name: ENABLE_PHI
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: enable_phi
+                optional: true
           - name: MAPBOX_API_TOKEN
             # Optional token for mapbox api
             valueFrom:

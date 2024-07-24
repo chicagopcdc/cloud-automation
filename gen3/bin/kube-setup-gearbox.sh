@@ -31,6 +31,12 @@ setup_database() {
       return 1
     fi
 
+    if g3k_config_lookup '.global.enable_phi' 2> /dev/null; then
+      ENABLE_PHI=True
+    else
+      ENABLE_PHI=False
+    fi
+
     # go ahead and rotate the password whenever we regen this file
     local password="$(gen3 random)"
     cat - > "$secretsFolder/gearbox.env" <<EOM
@@ -45,6 +51,7 @@ S3_BUCKET_NAME=$(jq -r .gearboxaws.gearbox_match_conditions_bucket_name < "$(gen
 S3_AWS_ACCESS_KEY_ID=$(jq -r .gearboxaws.gearbox_bucket_aws_key_id < "$(gen3_secrets_folder)/creds.json")
 S3_AWS_SECRET_ACCESS_KEY=$(jq -r .gearboxaws.gearbox_bucket_aws_access_key < "$(gen3_secrets_folder)/creds.json")
 ADMIN_LOGINS=gateway:$password
+ENABLE_PHI=$ENABLE_PHI
 EOM
     # make it easy for nginx to get the Authorization header ...
     echo -n "gateway:$password" | base64 > "$secretsFolder/base64Authz.txt"
