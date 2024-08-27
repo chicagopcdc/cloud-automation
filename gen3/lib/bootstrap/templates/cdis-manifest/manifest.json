@@ -44,7 +44,8 @@
     "portal_app": "dev",
     "sync_from_dbgap": "False",
     "useryaml_s3path": "",
-    "netpolicy": "on"
+    "netpolicy": "on",
+    "enable_phi": false
   },
   "canary": {
     "default": 0
