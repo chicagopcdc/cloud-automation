@@ -106,7 +106,7 @@ fi
 # Sync the manifest config from manifest.json (or manifests/gearbox.json) to the k8s config map.
 # This may not actually create the manifest-gearbox config map if the user did not specify any gearbox
 # keys in their manifest configuration.
-gen3 gitops configmaps
+[[ -z "$GEN3_ROLL_ALL" ]] && gen3 gitops configmaps
 
 
 gen3 roll gearbox

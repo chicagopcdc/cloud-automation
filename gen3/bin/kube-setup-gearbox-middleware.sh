@@ -47,7 +47,7 @@ if [ -d "$(dirname $(g3k_manifest_path))/gearbox-middleware" ]; then
   fi
 fi
 
-gen3 gitops configmaps
+[[ -z "$GEN3_ROLL_ALL" ]] && gen3 gitops configmaps
 
 gen3 roll gearbox-middleware
 g3kubectl apply -f "${GEN3_HOME}/kube/services/gearbox-middleware/gearbox-middleware-service.yaml"

@@ -69,6 +69,12 @@ data:
           - m7i.12xlarge
           - m7i.16xlarge
           - m7i.24xlarge
+          - r7iz.2xlarge
+          - r7iz.4xlarge
+          - r7iz.8xlarge
+          - r7iz.12xlarge
+          - r7iz.16xlarge
+          - r7iz.24xlarge
       taints:
         - key: role
           value: WORKFLOW_NAME
@@ -78,11 +84,11 @@ data:
         purpose: workflow
       limits:
         resources:
-          cpu: 2000
+          cpu: 4000
       providerRef:
         name: workflow-WORKFLOW_NAME
-      # Kill nodes after 30 days to ensure they stay up to date
-      ttlSecondsUntilExpired: 2592000
+      # Kill nodes after 2 days to ensure they stay up to date
+      ttlSecondsUntilExpired: 172800
       ttlSecondsAfterEmpty: 10
 
   nodetemplate.yaml: |
@@ -91,6 +97,9 @@ data:
     metadata:
       name: workflow-WORKFLOW_NAME
     spec:
+      amiSelector:
+        aws::name: EKS-FIPS*
+        aws::owners: "143731057154"
       subnetSelector:
         karpenter.sh/discovery: ENVIRONMENT
       securityGroupSelector:
@@ -122,22 +131,6 @@ data:
         echo "$(jq '.registryPullQPS=0' /etc/kubernetes/kubelet/kubelet-config.json)" > /etc/kubernetes/kubelet/kubelet-config.json
 
         sysctl -w fs.inotify.max_user_watches=12000
-
-        sudo yum update -y
-        sudo yum install -y dracut-fips openssl >> /opt/fips-install.log
-        sudo  dracut -f
-        # configure grub
-        sudo /sbin/grubby --update-kernel=ALL --args="fips=1"
-
-        --BOUNDARY
-        Content-Type: text/cloud-config; charset="us-ascii"
-
-        power_state:
-          delay: now
-          mode: reboot
-          message: Powering off
-          timeout: 2
-          condition: true
 
         --BOUNDARY--
       blockDeviceMappings:
