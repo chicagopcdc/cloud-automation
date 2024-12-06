@@ -36,6 +36,18 @@ fi
 gen3 roll amanuensis
 g3kubectl apply -f "${GEN3_HOME}/kube/services/amanuensis/amanuensis-service.yaml"
 
+amanuensisVersion="$(g3k_manifest_lookup .versions.amanuensis)"
+amanuensisVersion="${amanuensisVersion##*:}"
+
+# amanuensis versions greater than 2.21.0 introduces this cron job
+if [[ "$amanuensisVersion" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+  if (semver_ge "$amanuensisVersion" "2.21.0"); then
+    gen3 job run "${GEN3_HOME}/kube/services/jobs/amanuensis-clear-unused-filter-sets-cronjob.yaml"
+  fi
+else
+  gen3_log_info "amanuensis version $amanuensisVersion does not support the clear filter-set cronjob"
+fi
+
 # g3kubectl apply -f "${GEN3_HOME}/kube/services/amanuensis/amanuensis-canary-service.yaml"
 gen3_log_info "The amanuensis service has been deployed onto the k8s cluster."
 
