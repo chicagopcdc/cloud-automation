@@ -137,9 +137,9 @@ def inject_creds_into_amanuensis_config(creds_file_path, config_file_path):
         config_file, "AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET/aws_secret_access_key", data_delivery_bucket_aws_access_key
     )
 
-    print("  AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET injected with value(s) from creds.json")
+    print("  AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET/bucket_name injected with value(s) from creds.json")
     config_file = _replace(
-        config_file, "AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET", data_delivery_bucket, key_only=True
+        config_file, "AWS_CREDENTIALS/DATA_DELIVERY_S3_BUCKET/bucket_name", data_delivery_bucket
     )
 
     # print("  ENCRYPTION_KEY injected with value(s) from creds.json")
@@ -354,7 +354,7 @@ def _replace(yaml_config, path_to_key, replacement_value, start=0, nested_level=
         return yaml_config
 
     # set new start point to past current match and move on to next match
-    start = matches.end(0)
+    start = start + matches.end(0)
     nested_level += 1
     del nested_path_to_replace[0]
 
