@@ -46,11 +46,10 @@ DB_USER=$(jq -r .db_username < "$secretsFolder/dbcreds.json")
 DB_PASSWORD=$(jq -r .db_password < "$secretsFolder/dbcreds.json")
 DB_DATABASE=$(jq -r .db_database < "$secretsFolder/dbcreds.json")
 
-# READ FROM $GEN3_SECRETS_HOME/creds.json & use jq to read
-S3_BUCKET_NAME=$(jq -r .gearbox.gearbox_match_conditions_bucket_name < "$GEN3_SECRETS_HOME/creds.json")
-S3_AWS_ACCESS_KEY_ID=$(jq -r .gearbox.gearbox_bucket_aws_key_id < "$GEN3_SECRETS_HOME/creds.json")
-S3_AWS_SECRET_ACCESS_KEY=$(jq -r .gearbox.gearbox_bucket_aws_access_key < "$GEN3_SECRETS_HOME/creds.json")
-
+# READ FROM "$(gen3_secrets_folder)/creds.json" & use jq to read
+S3_BUCKET_NAME=$(jq -r .gearboxaws.gearbox_match_conditions_bucket_name < "$(gen3_secrets_folder)/creds.json")
+S3_AWS_ACCESS_KEY_ID=$(jq -r .gearboxaws.gearbox_bucket_aws_key_id < "$(gen3_secrets_folder)/creds.json")
+S3_AWS_SECRET_ACCESS_KEY=$(jq -r .gearboxaws.gearbox_bucket_aws_access_key < "$(gen3_secrets_folder)/creds.json")
 ADMIN_LOGINS=gateway:$password
 ENABLE_PHI=$ENABLE_PHI
 EOM
@@ -72,7 +71,7 @@ fi
 
 if [[ -f "$(gen3_secrets_folder)/creds.json" ]]; then
   echo "Creating gearbox portal configs and merging from $(gen3_secrets_folder)/creds.json"
-  S3_BUCKET_NAME=$(jq -r .gearbox.gearbox_match_conditions_bucket_name < "$GEN3_SECRETS_HOME/creds.json")
+  S3_BUCKET_NAME=$(jq -r .gearboxaws.gearbox_match_conditions_bucket_name < "$(gen3_secrets_folder)/creds.json")
   # Create gitops.json for gearbox frontend
   hostname="$(gen3 api hostname)"
   gitops_path="$HOME/cdis-manifest/$hostname/portal"
