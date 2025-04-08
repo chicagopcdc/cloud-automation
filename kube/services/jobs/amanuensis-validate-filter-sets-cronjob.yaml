@@ -53,11 +53,11 @@ spec:
                       name: manifest-global
                       key: hostname
                 - name: BASE_URL
-                  value: "https://${HOSTNAME}/"
+                  value: "https://$(HOSTNAME)/"
                 - name: OUTPUT_FILE
                   value: "/tmp/es-dd-config/es_to_dd_map.json"
                 - name: DICTIONARY_URL
-                  value: "https://${HOSTNAME}/api/v0/submission/_dictionary/_all"
+                  value: "https://$(HOSTNAME)/api/v0/submission/_dictionary/_all"
               volumeMounts:
                 - name: "es-dd-config-volume"
                   mountPath: "/tmp/es-dd-config"
