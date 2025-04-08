@@ -103,3 +103,4 @@ spec:
                 - -c
                 - |
                   validate-filter-sets 
+          restartPolicy: Never   
