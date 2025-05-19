@@ -139,6 +139,10 @@ spec:
               readOnly: true
               mountPath: "/var/www/PcdcAnalysisTools/wsgi.py"
               subPath: "wsgi.py"
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/PcdcAnalysisTools/bin/setting.py"
+              subPath: "wsgi.py"
             - name: "creds-volume"
               readOnly: true
               mountPath: "/var/www/PcdcAnalysisTools/creds.json"
