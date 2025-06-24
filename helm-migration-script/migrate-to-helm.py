@@ -14,6 +14,21 @@ from pathlib import Path
 SECRETS_MANAGER_CLIENT = None
 COMMONS_NAME = None
 
+# Custom representer to use block style (|) for multiline strings
+def str_presenter(dumper, data):
+    try:
+
+        dlen = len(data.splitlines())
+        if (dlen > 1) or len(data) > 1000:
+            return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+    except TypeError as ex:
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+
+
+yaml.add_representer(str, str_presenter)
+
+
 def find_manifest_path():
     # Check if environment variable is set
     env_path = os.environ.get('GEN3_MANIFEST_HOME')
@@ -167,10 +182,12 @@ def generate_aws_config():
                               shell=True, capture_output=True, text=True).stdout.strip("\n")
   account = subprocess.run("aws sts get-caller-identity | jq -r .Account", 
                             shell=True, capture_output=True, text=True).stdout.strip("\n")
+  
+  commons_name = get_commons_name()
+  new_commons_name = f"{commons_name}-helm"
 
-  es_proxy_role_name = f"{vpc}--{namespace}--es-access"
-
-  return_dict["awsEsProxyRole"] = es_proxy_role_name
+  return_dict["awsEsProxyRole"] = f"{vpc}--{new_commons_name}--es-access"
+  return_dict["hatchery_role"] = f"{vpc}--{new_commons_name}--hatchery-sa"
   return_dict["account"] = account
   return_dict["secretStoreServiceAccount"] = {
     "enabled": True,
@@ -227,23 +244,70 @@ def template_global_section(manifest_data):
 
 def template_guppy_section(manifest_data, manifest_path):
     guppy_data = read_manifest_data(manifest_data, manifest_path, "guppy")
+    
     guppy_yaml_data = {}
 
-    for key in guppy_data:
-      guppy_yaml_data[to_camel_case(key)] = guppy_data[key]
+    if guppy_data != {}:
+      for key in guppy_data:
+        guppy_yaml_data[to_camel_case(key)] = guppy_data[key]
 
-    return {"guppy": guppy_yaml_data}
+      # Hardcode esEndpoint
+      guppy_yaml_data["esEndpoint"] = "http://elasticsearch:9200"
 
-def template_metdata_section(manifest_data, manifest_path):
+    return guppy_yaml_data
+
+def template_aws_es_proxy_section():
+    esproxy_yaml_data = {}
+
+    result = subprocess.run(
+        ["kubectl", "get", "deployment", "aws-es-proxy-deployment", "-o", "yaml"],
+        capture_output=True, text=True
+    )
+
+    result_dict = yaml.safe_load(result.stdout.strip())
+
+    esproxy_endpoint = result_dict["spec"]["template"]["spec"]["containers"][0]["env"][0]["value"]
+
+    esproxy_yaml_data["esEndpoint"] = esproxy_endpoint
+
+    return esproxy_yaml_data
+
+def template_metadata_section(manifest_data, manifest_path):
   metadata_data = read_manifest_data(manifest_data, manifest_path, "metadata")
   metadata_yaml_data = {}
 
   if "USE_AGG_MDS" in metadata_data.keys():
-    metadata_yaml_data["useAggMds"] = manifest_data["USE_AGG_MDS"]
+    metadata_yaml_data["useAggMds"] = metadata_data["USE_AGG_MDS"]
   if "AGG_MDS_NAMESPACE" in metadata_data.keys():
-    metadata_yaml_data["addMdsNamespace"] = manifest_data["AGG_MDS_NAMESPACE"]
+    metadata_yaml_data["aggMdsNamespace"] = metadata_data["AGG_MDS_NAMESPACE"]
+  if "AGG_MDS_DEFAULT_DATA_DICT_FIELD" in metadata_data.keys():
+    metadata_yaml_data["aggMdsDefaultDataDictField"] = metadata_data["AGG_MDS_DEFAULT_DATA_DICT_FIELD"]
+
+
+  # AggMDS config
+  agg_mds_config_path = f"{manifest_path}/metadata/aggregate_config.json"
+  if os.path.exists(agg_mds_config_path):
+    with open(agg_mds_config_path, 'r') as aggmds:
+        agg_mds_string = aggmds.read()
+        metadata_yaml_data["aggMdsConfig"] = agg_mds_string
+
+  metadata_yaml_data["esEndpoint"] = "http://elasticsearch:9200"
   
-  return { "metadata": metadata_yaml_data }
+  return metadata_yaml_data
+
+def template_etl_section(manifest_data, manifest_path):
+  etl_yaml_data = {}
+
+  # ETL Mapping
+  etl_config_path = f"{manifest_path}/etlMapping.yaml"
+  if os.path.exists(etl_config_path):
+    with open(etl_config_path, 'r') as etlmap:
+        etl_mapping_data = yaml.safe_load(etlmap)
+        etl_yaml_data.update(etl_mapping_data)
+
+    etl_yaml_data["esEndpoint"] = "elasticsearch"
+  
+  return etl_yaml_data
 
 def template_portal_section(manifest_data, manifest_path):
   portal_data = read_manifest_data(manifest_data, manifest_path, "portal")
@@ -300,6 +364,20 @@ def template_portal_section(manifest_data, manifest_path):
     portal_yaml_data["gitops"]["sponsors"] = files_b64
 
   return portal_yaml_data
+
+def template_hatchery_section(manifest_data, manifest_path):
+  hatchery_manifest_path = f"{manifest_path}/manifests/hatchery/"
+
+  hatchery_yaml_data = {}
+  hatchery_json_path = f"{hatchery_manifest_path}/hatchery.json"
+  if os.path.exists(hatchery_json_path):
+     with open(hatchery_json_path, 'r') as hatchery_json:
+        hatchery_json_string = hatchery_json.read()
+        hatchery_json_obj = json.loads(hatchery_json_string)  # Parse JSON string to Python dict
+        hatchery_yaml_data = {"json": hatchery_json_string }
+
+
+  return hatchery_yaml_data
 
 def template_sower_section(manifest_data, manifest_path):
   sower_data = read_manifest_data(manifest_data, manifest_path, "sower")
@@ -364,12 +442,24 @@ def template_versions_section(manifest_data, scaling_data):
 
   return versions_yaml_data
 
+def template_dashboard_section(gen3_secrets_path):
+  dashboard_yaml_data = {}
+  DASHBOARD_CONFIG_PATH = os.path.join(gen3_secrets_path, "g3auto", "dashboard", "config.json")
+
+  if os.path.exists(DASHBOARD_CONFIG_PATH):
+    with open(DASHBOARD_CONFIG_PATH) as file:
+      dashboard_data = json.load(file)
+
+      dashboard_yaml_data["dashboardConfig"] = dashboard_data
+
+  return dashboard_yaml_data
+
 def merge_service_section(final_output, yaml_data, service_name):
   if yaml_data != {}:
     if service_name in final_output.keys():
       final_output[service_name] = {**final_output[service_name], **yaml_data}
     else:
-      final_output[service_name] = yaml_data[service_name]
+      final_output[service_name] = yaml_data
   return final_output
 
 def translate_manifest(manifest_path):
@@ -383,25 +473,56 @@ def translate_manifest(manifest_path):
 
   global_yaml_data = template_global_section(manifest)
   versions_yaml_data = template_versions_section(manifest, scaling_data)
-
   guppy_yaml_data = template_guppy_section(manifest, manifest_path)
+  etl_yaml_data = template_etl_section(manifest, manifest_path)
+  esproxy_yaml_data = template_aws_es_proxy_section()
   portal_yaml_data = template_portal_section(manifest, manifest_path)
+  metadata_yaml_data = template_metadata_section(manifest, manifest_path)
   ssjdispatcher_yaml_data = template_ssjdispatcher_section(manifest, manifest_path)
   sower_yaml_data = template_sower_section(manifest, manifest_path)
   fence_yaml_data = generate_fence_secret_config(GEN3_SECRETS_FOLDER)
+  hatchery_yaml_data = template_hatchery_section(manifest, manifest_path)
+  dashboard_yaml_data = template_dashboard_section(GEN3_SECRETS_FOLDER)
 
   final_output = {**global_yaml_data, **versions_yaml_data}
 
-  final_output = merge_service_section(final_output, guppy_yaml_data, "guppy")
   final_output = merge_service_section(final_output, portal_yaml_data, "portal")
   final_output = merge_service_section(final_output, sower_yaml_data, "sower")
   final_output = merge_service_section(final_output, ssjdispatcher_yaml_data, "ssjdispatcher")
   final_output = merge_service_section(final_output, fence_yaml_data, "fence")
+  final_output = merge_service_section(final_output, metadata_yaml_data, "metadata")
+  final_output = merge_service_section(final_output, guppy_yaml_data, "guppy")
+  final_output = merge_service_section(final_output, etl_yaml_data, "etl")
+  final_output = merge_service_section(final_output, esproxy_yaml_data, "aws-es-proxy")
+  final_output = merge_service_section(final_output, hatchery_yaml_data, "hatchery")
+  final_output = merge_service_section(final_output, dashboard_yaml_data, "dashboard")
+
+  account = subprocess.run("aws sts get-caller-identity | jq -r .Account", 
+                          shell=True, capture_output=True, text=True).stdout.strip("\n")
+  
+  vpc = subprocess.run("kubectl get configmaps global -ojsonpath='{ .data.environment }'",
+                        shell=True, capture_output=True, text=True).stdout.strip("\n")
+  
+  commons_name = get_commons_name()
+  new_commons_name = f"{commons_name}-helm"
 
   # Again, these are sloppy, but I'm feeling lazy. May burn us
   if "manifestservice" in final_output.keys():
     final_output["manifestservice"]["externalSecrets"] = {
       "manifestserviceG3auto": f"{commons_name}-manifestservice-g3auto"
+    }
+
+    final_output["manifestservice"]["serviceAccount"] = {
+      "annotations": {
+        "eks.amazonaws.com/role-arn": f"arn:aws:iam::{account}:role/{vpc}--{new_commons_name}--manifest-service-sa"
+      }
+    }
+
+  if "dashboard" in final_output.keys():
+    final_output["dashboard"]["serviceAccount"] = {
+      "annotations": {
+        "eks.amazonaws.com/role-arn": f"arn:aws:iam::{account}:role/{vpc}--{new_commons_name}--dashboard-access"
+      }
     }
   
   if "sower" in final_output.keys():
@@ -410,20 +531,39 @@ def translate_manifest(manifest_path):
       "sowerjobsG3auto": f"{commons_name}-sower-jobs-g3auto"  
     }
 
-  audit_dict = {
-    "auditG3auto": f"{commons_name}-audit-g3auto"
-  }
-
   if "audit" in final_output.keys():
-    final_output["audit"]["externalSecrets"] = audit_dict
+    final_output["audit"]["externalSecrets"] = {
+      "auditG3auto": f"{commons_name}-audit-g3auto"
+    }
+
+    final_output["audit"]["serviceAccount"] = {
+      "annotations": {
+        "eks.amazonaws.com/role-arn": f"arn:aws:iam::{account}:role/{vpc}--{new_commons_name}--audit-sqs-receiver"
+      }
+    }
   else:
     final_output["audit"] = {
-      "externalSecrets": audit_dict
+      "externalSecrets": {
+        "auditG3auto": f"{commons_name}-audit-g3auto"
+      },
+
+      "serviceAccount": {
+        "annotations": {
+          "eks.amazonaws.com/role-arn": f"arn:aws:iam::{account}:role/{vpc}--{new_commons_name}--audit-sqs-receiver"
+        }
+      }
+    }
+
+  if "ambassador" in final_output.keys():
+    final_output["ambassador"] = {
+      "jupyterNamespace": commons_name
     }
 
   if "wts" in final_output.keys():
     final_output["wts"]["externalSecrets"] = {
-      "wtsG3auto": f"{commons_name}-wts-g3auto"
+      "wtsG3auto": f"{commons_name}-wts-g3auto",
+      "wtsOidcClient": f"{commons_name}-wts-client-secret",
+      "createWtsOidcClientSecret": False
     }
 
   if "ssjdispatcher" in final_output.keys():
@@ -452,6 +592,10 @@ def translate_manifest(manifest_path):
         "group": f"{commons_name}-helm"
       }
     }
+
+  final_output["mutatingWebhook"] = {
+    "enabled": True
+  }
 
   return final_output
 
@@ -629,8 +773,22 @@ def translate_audit_service_secrets(g3auto_path: str):
   if os.path.exists(db_file_path):
     with open(db_file_path) as file:
       unedited_text = file.read()
-      upload_secret(f"{commons_name}-audit-creds", translate_creds_structure(unedited_text))  
+      upload_secret(f"{commons_name}-audit-creds", translate_creds_structure(unedited_text))
+
+def translate_access_backend_service_secrets(g3auto_path: str):
+  print("Processing access-backend secrets")
+  G3AUTO_SERVICE_PATH = os.path.join(g3auto_path, "access-backend")
+  commons_name = get_commons_name()
+
+  files = [file for file in os.listdir(G3AUTO_SERVICE_PATH) if os.path.isfile(os.path.join(G3AUTO_SERVICE_PATH, file))]  
+  g3auto_dict = {}
+
+  for file in files:
+    full_path = os.path.join(G3AUTO_SERVICE_PATH, file)
+    with open(full_path) as open_file:
+        g3auto_dict[file] = open_file.read()
   
+  upload_secret(f"{commons_name}-access-backend-g3auto", json.dumps(g3auto_dict))
 
 def process_g3auto_secrets(gen3_secrets_path: str):
   G3AUTO_PATH = os.path.join(gen3_secrets_path, "g3auto")
@@ -644,7 +802,7 @@ def process_g3auto_secrets(gen3_secrets_path: str):
 
   # Filter only directories
   directories = [item for item in all_items if os.path.isdir(os.path.join(G3AUTO_PATH, item))]
-  generic_g3auto_services = ["arborist", "dashboard", "metadata", "pelicanservice", "requestor", "wts", "cohort-middleware", "sower-jobs"]
+  generic_g3auto_services = ["gen3userdatalibrary", "sower-jobs", "arborist", "metadata", "pelicanservice", "requestor", "wts", "cohort-middleware"]
 
   for dir in directories:
     if dir in generic_g3auto_services:
@@ -653,6 +811,8 @@ def process_g3auto_secrets(gen3_secrets_path: str):
       translate_manifest_service_secrets(G3AUTO_PATH)
     elif dir == "audit":
       translate_audit_service_secrets(G3AUTO_PATH)
+    elif dir == "access-backend":      
+      translate_access_backend_service_secrets(G3AUTO_PATH)
     else:
       print(f"Don't know what to do with {dir}, so just skipping it.")
 
