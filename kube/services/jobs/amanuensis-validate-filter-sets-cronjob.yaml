@@ -36,7 +36,7 @@ spec:
                 secretName: "portal-config"
           initContainers:
             - name: amanuensis-db-filter-set-filler
-              image: "quay.io/pcdc/amanuensis-db-filter-set-filler:main"
+              image: "quay.io/pcdc/amanuensis-db-filter-set-filler:0.1.0"
               imagePullPolicy: Always
               volumeMounts:
                 - name: "config-volume"
