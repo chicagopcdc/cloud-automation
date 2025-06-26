@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: amanuensis-validate-filter-sets
 spec:
-  schedule: "0 0 1 * *"
+  schedule: "0 23 * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 2
   failedJobsHistoryLimit: 2
