@@ -77,7 +77,7 @@ spec:
                   git clone https://github.com/chicagopcdc/gen3_etl.git
                   echo "Repository cloned successfully."
                   cd gen3_etl/elasticsearch 
-                  pip install --user -r requirements-ES-DD.txt
+                  pip install -r requirements-ES-DD.txt
                   cd etl
                   python create_es_dd_mapping.py add-manual-fields
                   echo "ES-DD config created successfully."
