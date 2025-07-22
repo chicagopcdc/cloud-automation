@@ -123,6 +123,28 @@ config['EXTERNAL'] = {
     }
 }
 
+config['TABLE_ONE'] = {
+    'consortium': ["INSTRuCT", "INRG", "MaGIC", "NODAL", "INTERACT"],
+    'excluded_variables': [
+        {
+            'label': 'Data Contributor',
+            'field': 'data_contributor_id',
+        },
+        {
+            'label': 'Study',
+            'field': 'studies.study_id',
+        },
+        {
+            'label': 'Treatment Arm',
+            'field': 'studies.treatment_arm',
+        }
+    ],
+
+    'result': {
+        'enabled': True
+    }
+}
+
 app_init(app)
 application = app
 application.debug = (is_env_enabled('GEN3_DEBUG'))
