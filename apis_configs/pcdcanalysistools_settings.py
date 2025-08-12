@@ -141,7 +141,7 @@ config['TABLE_ONE'] = {
     ],
 
     'result': {
-        'enabled': True
+        'enabled': False
     }
 }
 
