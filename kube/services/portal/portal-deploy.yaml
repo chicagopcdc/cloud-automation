@@ -92,9 +92,6 @@ spec:
         ports:
         - containerPort: 80
         - containerPort: 443
-        command: 
-          - /bin/bash
-          - ./dockerStart.sh
         env:
           - name: HOSTNAME
             value: revproxy-service
