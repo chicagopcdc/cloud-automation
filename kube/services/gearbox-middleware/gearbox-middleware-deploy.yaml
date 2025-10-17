@@ -69,11 +69,11 @@ spec:
           volumeMounts:
             - name: "gearbox-middleware-jwt-keys"
               readOnly: true 
-              mountPath: "gearbox_middleware/gearbox_middleware/keys/jwt_private_key.pem"
+              mountPath: "/gearbox-middleware/gearbox_middleware/keys/jwt_private_key.pem"
               subPath: jwt_private_key.pem
             - name: config-volume-g3auto
               readOnly: true
-              mountPath: "/gearbox_middleware/.env"
+              mountPath: "/gearbox-middleware/.env"
               subPath: gearbox-middleware.env
             - name: config-volume
               readOnly: true

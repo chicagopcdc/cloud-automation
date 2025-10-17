@@ -16,6 +16,7 @@ clinicaltrials.gov
 charts.bitnami.com
 ctds-planx.atlassian.net
 data.cityofchicago.org
+data.mendeley.com
 data.stage.qdr.org
 dataguids.org
 api.cloudflare.com
@@ -36,6 +37,7 @@ centos.mirrors.tds.net
 centos.mirrors.wvstateu.edu
 cernvm.cern.ch
 charts.authelia.com
+charts.crossplane.io
 charts.helm.sh
 cloud.r-project.org
 coredns.github.io
@@ -85,6 +87,7 @@ grafana.com
 grafana.github.io
 helm.elastic.co
 helm.localstack.cloud
+helm.cilium.io
 http.us.debian.org
 ifconfig.io
 ingress.coralogix.us
@@ -125,6 +128,7 @@ mirrors.gigenet.com
 mirrors.lga7.us.voxel.net
 mirrors.nics.utk.edu
 mirrors.syringanetworks.net
+moonbeam-nyc.github.io
 mps.csb.pitt.edu
 mran.microsoft.com
 neuro.debian.net

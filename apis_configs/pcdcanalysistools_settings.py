@@ -1,6 +1,6 @@
 from PcdcAnalysisTools.api import app, app_init
 from os import environ
-import config_helper
+import bin.confighelper as config_helper
 from pcdcutils.environment import is_env_enabled
 
 APP_NAME='PcdcAnalysisTools'
@@ -139,10 +139,7 @@ config['TABLE_ONE'] = {
             'field': 'studies.treatment_arm',
         }
     ],
-
-    'result': {
-        'enabled': True
-    }
+    'enabled': False
 }
 
 app_init(app)

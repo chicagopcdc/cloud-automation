@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: amanuensis-validate-filter-sets
 spec:
-  schedule: "0 0 1 * *"
+  schedule: "0 23 * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 2
   failedJobsHistoryLimit: 2
@@ -34,15 +34,22 @@ spec:
             - name: portal-config
               secret:
                 secretName: "portal-config"
+            - name: invalid-filters-volume 
+              emptyDir: {}
           initContainers:
             - name: amanuensis-db-filter-set-filler
-              image: "quay.io/pcdc/amanuensis-db-filter-set-filler:main"
+              image: "quay.io/pcdc/amanuensis-db-filter-set-filler:0.1.0"
               imagePullPolicy: Always
+              env:
+                - name: invalid_filters_list_path
+                  value: "/root/.gen3/amanuensis/invalid-filters.json"
               volumeMounts:
                 - name: "config-volume"
                   readOnly: true
                   mountPath: "/var/www/amanuensis/amanuensis-config.yaml"
                   subPath: amanuensis-config.yaml
+                - name: "invalid-filters-volume"
+                  mountPath: "/root/.gen3/amanuensis"
             - name: create-es-dd-config
               image: "quay.io/cdis/awshelper:stable"
               imagePullPolicy: Always
@@ -65,22 +72,14 @@ spec:
                 - /bin/bash
                 - -c
                 - |
-
                   cd /tmp
-
                   export PATH="/home/ubuntu/.local/bin:$PATH"
-
                   git clone https://github.com/chicagopcdc/gen3_etl.git
                   echo "Repository cloned successfully."
-
                   cd gen3_etl/elasticsearch 
-
-                  pip install --user -r requirements-ES-DD.txt
-
+                  pip install -r requirements-ES-DD.txt
                   cd etl
-
                   python create_es_dd_mapping.py add-manual-fields
-
                   echo "ES-DD config created successfully."
           containers:
             - name: validate-filter-sets
@@ -88,8 +87,9 @@ spec:
               imagePullPolicy: Always
               volumeMounts:
                 - name: "es-dd-config-volume"
-                  mountPath: "/var/www/amanuensis/es_to_dd_map.json"
-                  subPath: es_to_dd_map.json
+                  mountPath: "/var/www/amanuensis"
+                # - name: "es-dd-config-volume"
+                #   mountPath: "/root/.gen3/amanuensis"
                 - name: "config-volume"
                   readOnly: true
                   mountPath: "/var/www/amanuensis/amanuensis-config.yaml"
@@ -98,9 +98,11 @@ spec:
                   readOnly: true
                   mountPath: "/var/www/amanuensis/gitops.json"
                   subPath: gitops.json
+                - name: "invalid-filters-volume"
+                  mountPath: "/root/.gen3/amanuensis"
               args:
                 - /bin/bash
                 - -c
                 - |
                   validate-filter-sets 
-          restartPolicy: Never   
+          restartPolicy: Never

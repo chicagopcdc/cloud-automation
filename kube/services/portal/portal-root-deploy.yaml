@@ -88,14 +88,10 @@ spec:
           failureThreshold: 10
         resources:
           requests:
-            cpu: 2
             memory: 3Gi
         ports:
         - containerPort: 80
         - containerPort: 443
-        command:
-          - /bin/bash
-          - ./dockerStart.sh
         env:
           - name: HOSTNAME
             value: revproxy-service
