@@ -20,10 +20,24 @@ setup_gearbox_middle() {
     mkdir -m 0700 -p "$secretsFolder"
     # go ahead and rotate the password whenever we regen this file
     local password="$(gen3 random)"
-    cat - > "$secretsFolder/gearbox-middleware.env" <<EOM
 
+    local creds_src="$(gen3_secrets_folder)/creds.json"
+    if [[ -f "$creds_src" ]]; then
+      
+
+    cat - > "$secretsFolder/gearbox-middleware.env" <<EOM
+DB_HOST=$(jq -r .gearbox.db_host < "$creds_src")
+DB_USER=$(jq -r .gearbox.db_username < "$secretsFolder/dbcreds.json")
+DB_PASSWORD=$(jq -r .gearbox.db_password < "$secretsFolder/dbcreds.json")
+DB_DATABASE=$(jq -r .gearbox.db_database < "$secretsFolder/dbcreds.json")
 ADMIN_LOGINS=gateway:$password
 EOM
+
+    else
+      gen3_log_err "Required file $creds_src not found"
+      return 1
+    fi
+
     # make it easy for nginx to get the Authorization header ...
     echo -n "gateway:$password" | base64 > "$secretsFolder/base64Authz.txt"
   fi
