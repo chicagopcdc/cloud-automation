@@ -27,9 +27,9 @@ setup_gearbox_middle() {
 
     cat - > "$secretsFolder/gearbox-middleware.env" <<EOM
 DB_HOST=$(jq -r .gearbox.db_host < "$creds_src")
-DB_USER=$(jq -r .gearbox.db_username < "$secretsFolder/dbcreds.json")
-DB_PASSWORD=$(jq -r .gearbox.db_password < "$secretsFolder/dbcreds.json")
-DB_DATABASE=$(jq -r .gearbox.db_database < "$secretsFolder/dbcreds.json")
+DB_USER=$(jq -r .gearbox.db_username < "$creds_src")
+DB_PASSWORD=$(jq -r .gearbox.db_password < "$creds_src")
+DB_DATABASE=$(jq -r .gearbox.db_database < "$creds_src")
 ADMIN_LOGINS=gateway:$password
 EOM
 
