@@ -97,11 +97,11 @@ spec:
         volumeMounts:
           - name: "gearbox-middleware-jwt-keys"
             readOnly: true
-            mountPath: "/src/src/gearbox/keys/jwt_public_key.pem"
+            mountPath: "/gearbox/src/gearbox/keys/jwt_public_key.pem"
             subPath: jwt_public_key.pem
           - name: config-volume-g3auto
             readOnly: true
-            mountPath: /src/.env
+            mountPath: /gearbox/.env
             subPath: gearbox.env
           - name: config-volume
             readOnly: true
@@ -125,7 +125,7 @@ spec:
           volumeMounts:
             - name: config-volume-g3auto
               readOnly: true
-              mountPath: /src/.env
+              mountPath: /gearbox/.env
               subPath: gearbox.env
           resources:
             limits:
@@ -135,4 +135,4 @@ spec:
           args:
             - "-c"
             - |
-              /env/bin/alembic upgrade head
+              poetry run alembic upgrade head

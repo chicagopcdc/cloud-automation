@@ -52,6 +52,7 @@ S3_AWS_ACCESS_KEY_ID=$(jq -r .gearboxaws.gearbox_bucket_aws_key_id < "$(gen3_sec
 S3_AWS_SECRET_ACCESS_KEY=$(jq -r .gearboxaws.gearbox_bucket_aws_access_key < "$(gen3_secrets_folder)/creds.json")
 ADMIN_LOGINS=gateway:$password
 ENABLE_PHI=$ENABLE_PHI
+BYPASS_IMPORTANT_QUESTIONS=True
 EOM
     # make it easy for nginx to get the Authorization header ...
     echo -n "gateway:$password" | base64 > "$secretsFolder/base64Authz.txt"

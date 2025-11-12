@@ -1,6 +1,6 @@
 from PcdcAnalysisTools.api import app, app_init
 from os import environ
-import config_helper
+import bin.confighelper as config_helper
 from pcdcutils.environment import is_env_enabled
 
 APP_NAME='PcdcAnalysisTools'
@@ -121,6 +121,25 @@ config['EXTERNAL'] = {
         "gdc": "TARGET - GDC", 
         "gmkf": "GMKF"
     }
+}
+
+config['TABLE_ONE'] = {
+    'consortium': ["INSTRuCT", "INRG", "MaGIC", "NODAL", "INTERACT"],
+    'excluded_variables': [
+        {
+            'label': 'Data Contributor',
+            'field': 'data_contributor_id',
+        },
+        {
+            'label': 'Study',
+            'field': 'studies.study_id',
+        },
+        {
+            'label': 'Treatment Arm',
+            'field': 'studies.treatment_arm',
+        }
+    ],
+    'enabled': False
 }
 
 app_init(app)
