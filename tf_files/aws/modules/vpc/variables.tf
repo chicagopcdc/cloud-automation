@@ -163,3 +163,9 @@ variable "slack_webhook" {
 variable "fips" {
   default = false
 }
+
+# Used for GEARBOX dev/staging to move data to Prod S3 bucket
+variable "prod_promotion_role_arn" {
+  type    = string
+  default = null
+}

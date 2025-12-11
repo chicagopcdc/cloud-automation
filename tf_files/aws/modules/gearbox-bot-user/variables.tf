@@ -10,3 +10,10 @@ variable "bucket_access_arns" {
   type        = "list"
   default     = []
 }
+
+
+variable "prod_promotion_role_arn" {
+  type        = string
+  default     = null
+  description = "Role ARN in PROD that staging can assume. Null in prod."
+}

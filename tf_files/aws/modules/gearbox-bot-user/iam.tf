@@ -76,3 +76,32 @@ resource "aws_iam_user_policy" "gearbox-bot_extra_policy" {
 }
 EOF
 }
+
+
+resource "aws_iam_policy" "allow_assume_prod_role" {
+  count = var.prod_promotion_role_arn == null ? 0 : 1
+
+  name = "${var.vpc_name}-allow-assume-prod-promotion-role"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = "sts:AssumeRole",
+        Resource = var.prod_promotion_role_arn
+      }
+    ]
+  })
+}
+
+resource "aws_iam_user_policy_attachment" "gearbox_bot_assume_prod" {
+  count = var.prod_promotion_role_arn == null ? 0 : 1
+
+  user       = aws_iam_user.gearbox-bot.name
+  policy_arn = aws_iam_policy.allow_assume_prod_role[0].arn
+}
+
+
+
+
