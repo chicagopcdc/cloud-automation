@@ -8,5 +8,6 @@ output "gearbox-bot_id" {
 }
 
 output "prod_promotion_role_arn" {
-  value = aws_iam_role.staging_promotion_role.arn
+  value = length(aws_iam_role.staging_promotion_role) > 0 ? aws_iam_role.staging_promotion_role[0].arn : ""
+  description = "ARN of the staging promotion role, empty if not created"
 }

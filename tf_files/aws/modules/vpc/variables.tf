@@ -166,11 +166,9 @@ variable "fips" {
 
 # Used for GEARBOX dev/staging to move data to Prod S3 bucket
 variable "prod_promotion_role_arn" {
-  type    = string
-  default = null
+  default = ""
 }
 # Used for GEARBOX prod to allow dev/staging to get the role to move data to the prod S3
 variable "staging_account_id" {
-  type    = string
-  default = null
+  default = ""
 }

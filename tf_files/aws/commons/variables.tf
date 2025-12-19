@@ -538,14 +538,12 @@ variable "gearbox_allowed_origins" {
 }
 
 variable "prod_promotion_role_arn" {
-  type        = string
-  default     = null
+  default     = ""
   description = "Role ARN in PROD that staging can assume. Null in prod."
 }
 
 variable "staging_account_id" {
-  type        = string
-  default     = null
+  default     = ""
   description = "Role ARN in PROD that staging can assume. Null in prod."
 }
 
