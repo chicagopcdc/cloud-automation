@@ -17,3 +17,10 @@ variable "prod_promotion_role_arn" {
   default     = null
   description = "Role ARN in PROD that staging can assume. Null in prod."
 }
+
+variable "staging_account_id" {
+  type        = string
+  default     = null
+  description = "Role ARN in PROD that staging can assume. Null in prod."
+}
+

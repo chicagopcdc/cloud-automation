@@ -32,11 +32,14 @@ module "cdis_vpc" {
   vpc_flow_traffic               = "${var.vpc_flow_traffic}"
 
   #private_kube_route             = "${aws_route_table.private_kube.id}"
-  branch                         = "${var.branch}"
-  fence-bot_bucket_access_arns   = "${var.fence-bot_bucket_access_arns}"
+  branch                          = "${var.branch}"
+  fence-bot_bucket_access_arns    = "${var.fence-bot_bucket_access_arns}"
   amanuensis-bot_bucket_access_arns   = "${var.amanuensis-bot_bucket_access_arns}"
-  gearbox-bot_bucket_access_arns   = "${var.gearbox-bot_bucket_access_arns}"
-  gearbox_allowed_origins        = "${split(",",var.hostname)}"
+  gearbox-bot_bucket_access_arns      = "${var.gearbox-bot_bucket_access_arns}"
+  gearbox_allowed_origins             = "${split(",",var.hostname)}"
+  prod_promotion_role_arn             = "${var.prod_promotion_role_arn}"
+  staging_account_id                  = "${var.staging_account_id}"
+
   deploy_ha_squid                = "${var.deploy_ha_squid}"
   deploy_single_proxy            = "${var.deploy_single_proxy}"
 
