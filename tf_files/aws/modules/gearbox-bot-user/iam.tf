@@ -127,7 +127,6 @@ resource "aws_iam_user_policy" "gearbox_bot_assume_prod" {
 POLICY
 }
 
-
 # END
 
 
@@ -196,6 +195,8 @@ POLICY
 #}
 
 
+
+
 resource "aws_iam_role" "staging_promotion_role" {
   count = "${var.is_gearbox_prod ? 1 : 0}"
 
@@ -249,8 +250,8 @@ POLICY
 resource "aws_iam_role_policy_attachment" "attach_promote_policy" {
   count = "${var.is_gearbox_prod ? 1 : 0}"
 
-  role       = "${aws_iam_role.staging_promotion_role[0].name}"
-  policy_arn = "${aws_iam_policy.staging_promotion_policy[0].arn}"
+  role       = "${element(aws_iam_role.staging_promotion_role.*.name, 0)}"
+  policy_arn = "${element(aws_iam_policy.staging_promotion_policy.*.arn, 0)}"
 }
 
 # END
