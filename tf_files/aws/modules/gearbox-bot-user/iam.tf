@@ -127,11 +127,15 @@ resource "aws_iam_policy" "allow_assume_prod_role" {
 POLICY
 }
 
+locals {
+  assume_prod_policy_arn = "${var.is_gearbox_staging ? aws_iam_policy.allow_assume_prod_role[0].arn : ""}"
+}
+
 resource "aws_iam_user_policy_attachment" "gearbox_bot_assume_prod" {
   count = "${var.is_gearbox_staging ? 1 : 0}"
 
   user       = "${aws_iam_user.gearbox-bot.name}"
-  policy_arn = "${aws_iam_policy.allow_assume_prod_role[0].arn}"
+  policy_arn = "${local.assume_prod_policy_arn}"
 }
 
 # END
