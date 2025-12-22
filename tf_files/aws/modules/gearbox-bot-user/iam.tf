@@ -79,10 +79,10 @@ EOF
 
 
 
-## FOR STAGInG ACCOUNT TO PUSH TO PROD
+## FOR STAGING ACCOUNT TO PUSH TO PROD
 # START
 resource "aws_iam_policy" "allow_assume_prod_role" {
-  count = length(var.prod_promotion_role_arn) > 0 ? 1 : 0
+  count = var.is_gearbox_staging ? 1 : 0
 
   name = "${var.vpc_name}-allow-assume-prod-promotion-role"
 
@@ -99,7 +99,7 @@ resource "aws_iam_policy" "allow_assume_prod_role" {
 }
 
 resource "aws_iam_user_policy_attachment" "gearbox_bot_assume_prod" {
-  count = length(var.prod_promotion_role_arn) > 0 ? 1 : 0
+  count = var.is_gearbox_staging ? 1 : 0
 
   user       = aws_iam_user.gearbox-bot.name
   policy_arn = aws_iam_policy.allow_assume_prod_role[0].arn
@@ -110,7 +110,7 @@ resource "aws_iam_user_policy_attachment" "gearbox_bot_assume_prod" {
 ### FOR PROD account to allow staging to get access to the role
 # START
 resource "aws_iam_role" "staging_promotion_role" {
-  count = length(var.staging_account_id) > 0 ? 1 : 0
+  count = var.is_gearbox_prod ? 1 : 0
 
   name = "${var.vpc_name}-staging-promote-to-prod-role"
 
@@ -129,7 +129,7 @@ resource "aws_iam_role" "staging_promotion_role" {
 }
 
 resource "aws_iam_policy" "staging_promotion_policy" {
-  count = length(var.staging_account_id) > 0 ? 1 : 0
+  count = var.is_gearbox_prod ? 1 : 0
 
   name = "${var.vpc_name}-staging-promote-to-prod-policy"
 
@@ -158,7 +158,7 @@ resource "aws_iam_policy" "staging_promotion_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "attach_promote_policy" {
-  count = length(var.staging_account_id) > 0 ? 1 : 0
+  count = var.is_gearbox_prod ? 1 : 0
 
   role       = aws_iam_role.staging_promotion_role[0].name
   policy_arn = aws_iam_policy.staging_promotion_policy[0].arn

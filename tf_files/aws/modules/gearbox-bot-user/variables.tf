@@ -22,3 +22,10 @@ variable "staging_account_id" {
   description = "Role ARN in PROD that staging can assume. Null in prod."
 }
 
+variable "is_gearbox_staging" {
+  default = false
+}
+
+variable "is_gearbox_prod" {
+  default = false
+}

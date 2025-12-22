@@ -172,3 +172,9 @@ variable "prod_promotion_role_arn" {
 variable "staging_account_id" {
   default = ""
 }
+variable "is_gearbox_staging" {
+  default = false
+}
+variable "is_gearbox_prod" {
+  default = false
+}
