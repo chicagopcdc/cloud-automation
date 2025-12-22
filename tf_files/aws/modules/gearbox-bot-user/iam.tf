@@ -200,7 +200,7 @@ resource "aws_iam_user_policy_attachment" "gearbox_bot_assume_prod" {
 #  role       = aws_iam_role.staging_promotion_role[0].name
 #  policy_arn = aws_iam_policy.staging_promotion_policy[0].arn
 #}
-*/
+
 
 resource "aws_iam_role" "staging_promotion_role" {
   count = "${var.is_gearbox_prod ? 1 : 0}"
