@@ -109,7 +109,7 @@ EOF
 
 
 resource "aws_iam_policy" "allow_assume_prod_role" {
-  count = var.is_gearbox_staging ? 1 : 0
+  count = "${var.is_gearbox_staging ? 1 : 0}"
 
   name = "${var.vpc_name}-allow-assume-prod-promotion-role"
 
@@ -128,7 +128,7 @@ POLICY
 }
 
 resource "aws_iam_user_policy_attachment" "gearbox_bot_assume_prod" {
-  count = var.is_gearbox_staging ? 1 : 0
+  count = "${var.is_gearbox_staging ? 1 : 0}"
 
   user       = "${aws_iam_user.gearbox-bot.name}"
   policy_arn = "${aws_iam_policy.allow_assume_prod_role[0].arn}"
@@ -203,7 +203,7 @@ resource "aws_iam_user_policy_attachment" "gearbox_bot_assume_prod" {
 */
 
 resource "aws_iam_role" "staging_promotion_role" {
-  count = var.is_gearbox_prod ? 1 : 0
+  count = "${var.is_gearbox_prod ? 1 : 0}"
 
   name = "${var.vpc_name}-staging-promote-to-prod-role"
 
@@ -224,7 +224,7 @@ POLICY
 }
 
 resource "aws_iam_policy" "staging_promotion_policy" {
-  count = var.is_gearbox_prod ? 1 : 0
+  count = "${var.is_gearbox_prod ? 1 : 0}"
 
   name = "${var.vpc_name}-staging-promote-to-prod-policy"
 
@@ -253,7 +253,7 @@ POLICY
 }
 
 resource "aws_iam_role_policy_attachment" "attach_promote_policy" {
-  count = var.is_gearbox_prod ? 1 : 0
+  count = "${var.is_gearbox_prod ? 1 : 0}"
 
   role       = "${aws_iam_role.staging_promotion_role[0].name}"
   policy_arn = "${aws_iam_policy.staging_promotion_policy[0].arn}"
