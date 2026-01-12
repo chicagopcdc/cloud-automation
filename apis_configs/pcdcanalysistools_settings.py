@@ -117,14 +117,14 @@ config['EXTERNAL'] = {
             'value': 'gmkf'
         },
         {   
-            'label': 'Imaging Data Common', 
+            'label': 'Imaging Data Commons', 
             'value': 'idc'
         }
     ], 
     "commons_dict": {
         "gdc": "TARGET - GDC", 
         "gmkf": "GMKF",
-        "idc": "Imaging Data Common"
+        "idc": "Imaging Data Commons"
     }
 }
 
