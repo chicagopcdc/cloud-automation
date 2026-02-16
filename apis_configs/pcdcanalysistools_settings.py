@@ -115,11 +115,16 @@ config['EXTERNAL'] = {
         {
             'label': 'Gabriella Miller Kids First',
             'value': 'gmkf'
+        },
+        {   
+            'label': 'Imaging Data Commons', 
+            'value': 'idc'
         }
     ], 
     "commons_dict": {
         "gdc": "TARGET - GDC", 
-        "gmkf": "GMKF"
+        "gmkf": "GMKF",
+        "idc": "Imaging Data Commons"
     }
 }
 
