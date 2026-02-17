@@ -76,3 +76,184 @@ resource "aws_iam_user_policy" "gearbox-bot_extra_policy" {
 }
 EOF
 }
+
+
+
+## FOR STAGING ACCOUNT TO PUSH TO PROD
+# START
+
+### later terraform version
+#resource "aws_iam_policy" "allow_assume_prod_role" {
+#  count = var.is_gearbox_staging ? 1 : 0
+#
+#  name = "${var.vpc_name}-allow-assume-prod-promotion-role"
+#
+#  policy = jsonencode({
+#    Version = "2012-10-17",
+#    Statement = [
+#      {
+#        Effect   = "Allow",
+#        Action   = "sts:AssumeRole",
+#        Resource = var.prod_promotion_role_arn
+#      }
+#    ]
+#  })
+#}
+#
+#resource "aws_iam_user_policy_attachment" "gearbox_bot_assume_prod" {
+#  count = var.is_gearbox_staging ? 1 : 0
+#
+#  user       = aws_iam_user.gearbox-bot.name
+#  policy_arn = aws_iam_policy.allow_assume_prod_role[0].arn
+#}
+
+resource "aws_iam_user_policy" "gearbox_bot_assume_prod" {
+  count = "${var.is_gearbox_staging ? 1 : 0}"
+
+  name = "${var.vpc_name}-assume-prod-role"
+  user = "${aws_iam_user.gearbox-bot.name}"
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "sts:AssumeRole",
+      "Resource": "${var.prod_promotion_role_arn}"
+    }
+  ]
+}
+POLICY
+}
+
+# END
+
+
+
+
+
+
+
+### FOR PROD account to allow staging to get access to the role
+# START
+
+### later terraform version
+#resource "aws_iam_role" "staging_promotion_role" {
+#  count = var.is_gearbox_prod ? 1 : 0
+#
+#  name = "${var.vpc_name}-staging-promote-to-prod-role"
+#
+#  assume_role_policy = jsonencode({
+#    Version = "2012-10-17"
+#    Statement = [
+#      {
+#        Effect = "Allow"
+#        Principal = {
+#          AWS = "arn:aws:iam::${var.staging_account_id}:root"
+#        }
+#        Action = "sts:AssumeRole"
+#      }
+#    ]
+#  })
+#}
+#
+#resource "aws_iam_policy" "staging_promotion_policy" {
+#  count = var.is_gearbox_prod ? 1 : 0
+#
+#  name = "${var.vpc_name}-staging-promote-to-prod-policy"
+#
+#  policy = jsonencode({
+#    Version = "2012-10-17"
+#    Statement = [
+#      {
+#        Effect = "Allow"
+#        Action = [
+#          "s3:ListBucket"
+#        ]
+#        Resource = "arn:aws:s3:::${var.bucket_name}"
+#      },
+#      {
+#        Effect = "Allow"
+#        Action = [
+#          "s3:GetObject",
+#          "s3:GetObjectVersion",
+#          "s3:PutObject",
+#          "s3:DeleteObject"
+#        ]
+#        Resource = "arn:aws:s3:::${var.bucket_name}/*"
+#      }
+#    ]
+#  })
+#}
+#
+#resource "aws_iam_role_policy_attachment" "attach_promote_policy" {
+#  count = var.is_gearbox_prod ? 1 : 0
+#
+#  role       = aws_iam_role.staging_promotion_role[0].name
+#  policy_arn = aws_iam_policy.staging_promotion_policy[0].arn
+#}
+
+
+
+
+resource "aws_iam_role" "staging_promotion_role" {
+  count = "${var.is_gearbox_prod ? 1 : 0}"
+
+  name = "${var.vpc_name}-staging-promote-to-prod-role"
+
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::${var.staging_account_id}:root"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_policy" "staging_promotion_policy" {
+  count = "${var.is_gearbox_prod ? 1 : 0}"
+
+  name = "${var.vpc_name}-staging-promote-to-prod-policy"
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket"],
+      "Resource": "arn:aws:s3:::${var.bucket_name}"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": "arn:aws:s3:::${var.bucket_name}/*"
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_role_policy_attachment" "attach_promote_policy" {
+  count = "${var.is_gearbox_prod ? 1 : 0}"
+
+  role       = "${element(aws_iam_role.staging_promotion_role.*.name, 0)}"
+  policy_arn = "${element(aws_iam_policy.staging_promotion_policy.*.arn, 0)}"
+}
+
+# END
+
+

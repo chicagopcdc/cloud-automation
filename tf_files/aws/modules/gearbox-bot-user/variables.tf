@@ -10,3 +10,22 @@ variable "bucket_access_arns" {
   type        = "list"
   default     = []
 }
+
+
+variable "prod_promotion_role_arn" {
+  default     = ""
+  description = "Role ARN in PROD that staging can assume. Null in prod."
+}
+
+variable "staging_account_id" {
+  default     = ""
+  description = "Role ARN in PROD that staging can assume. Null in prod."
+}
+
+variable "is_gearbox_staging" {
+  default = false
+}
+
+variable "is_gearbox_prod" {
+  default = false
+}

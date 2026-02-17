@@ -97,6 +97,10 @@ output "gearbox-bot_secret" {
   value = "${module.gearbox-bot-user.gearbox-bot_secret}"
 }
 
+output "gearbox-bot-prod_promotion_role_arn" {
+  value = "${module.gearbox-bot-user.prod_promotion_role_arn}"
+}
+
 output "gearbox-match-conditions-bucket_name" {
   value = "${module.gearbox-match-conditions-bucket.data-bucket-with-versioning_name}"
 }
