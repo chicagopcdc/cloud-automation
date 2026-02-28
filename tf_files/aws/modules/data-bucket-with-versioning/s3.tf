@@ -2,10 +2,25 @@
 #------------- LOGGING
 resource "aws_s3_bucket" "log_bucket" {
   bucket = "${var.vpc_name}-data-bucket-with-versioning-log"
+
+  # ACL to allow S3 log delivery
+  acl = "log-delivery-write"
+
+  # Server-side encryption to match current state
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
   tags = {
     Purpose = "s3 bucket log bucket"
   }
 }
+
+
 
 resource "aws_s3_bucket" "data_bucket" {
   bucket = "${var.vpc_name}-data-bucket-with-versioning"

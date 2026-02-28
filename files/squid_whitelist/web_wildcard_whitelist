@@ -52,11 +52,13 @@
 .github.com
 .githubusercontent.com
 .gitlab.com
+.gnu.org
 .googleapis.com
 .googleusercontent.com
 .gstatic.com
 .hashicorp.com
 .healdata.org
+.hf.co
 .idph.illinois.gov
 .immport.org
 .jenkins.io
@@ -64,8 +66,10 @@
 .jetstack.io
 .k8s.io
 .kegg.jp
+.kernel.org
 .kidsfirstdrc.org
 .letsencrypt.org
+.m3aicommons.org
 .maven.org
 .metabolomicsworkbench.org
 .metacpan.org
@@ -76,6 +80,7 @@
 .nih.gov
 .nodesource.com
 .novocraft.com
+.nvcr.io
 .occ-data.org
 .occ-pla.net
 .oicr.on.ca
@@ -99,6 +104,7 @@
 .rcsb.org
 .rstudio.com
 .rubygems.org
+.rust-lang.org
 .sa-update.pccc.com
 .sencha.com
 .sks-keyservers.net
@@ -108,6 +114,7 @@
 .snapcraftcontent.com
 .sourceforge.net
 .southsideweekly.com
+.spack.io
 .strrl.dev
 .theanvil.io
 .themmrf.org

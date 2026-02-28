@@ -90,6 +90,10 @@ module "gearbox-bot-user" {
   vpc_name             = "${var.vpc_name}"
   bucket_name          = "${module.gearbox-match-conditions-bucket.data-bucket-with-versioning_name}"
   bucket_access_arns   = "${var.gearbox-bot_bucket_access_arns}"
+  prod_promotion_role_arn = "${var.prod_promotion_role_arn}"
+  staging_account_id    = "${var.staging_account_id}"
+  is_gearbox_staging    = "${var.is_gearbox_staging}"
+  is_gearbox_prod       = "${var.is_gearbox_prod}"
 }
 
 resource "aws_vpc" "main" {

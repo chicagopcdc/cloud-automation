@@ -71,6 +71,10 @@ output "gearbox-bot_user_id" {
   value = "${module.cdis_vpc.gearbox-bot_id}"
 }
 
+output "gearbox-bot-prod_promotion_role_arn" {
+  value = "${module.cdis_vpc.gearbox-bot-prod_promotion_role_arn}"
+}
+
 output "gearbox-match-conditions-bucket_name" {
   value = "${module.cdis_vpc.gearbox-match-conditions-bucket_name}"
 }

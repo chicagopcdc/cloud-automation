@@ -55,6 +55,23 @@ ADMIN_LOGINS=gateway:$password
 ENABLE_PHI=$ENABLE_PHI
 BYPASS_IMPORTANT_QUESTIONS=True
 EOM
+    if g3k_config_lookup '.gearbox.staging_data_mode' >/dev/null 2>&1; then
+      if s3_prod_bucket_name=$(g3k_config_lookup '.gearbox.s3_prod_bucket_name' 2>/dev/null) \
+        && prod_promotion_role_arn=$(g3k_config_lookup '.gearbox.prod_promotion_role_arn' 2>/dev/null); then
+
+        # Only append if both values are non-empty
+        if [[ -n "$s3_prod_bucket_name" && -n "$prod_promotion_role_arn" ]]; then
+          echo "S3_PROD_BUCKET_NAME=$s3_prod_bucket_name" >> "$secretsFolder/gearbox.env"
+          echo "PROD_PROMOTION_ROLE_ARN=$prod_promotion_role_arn" >> "$secretsFolder/gearbox.env"
+        else
+          gen3_log_warn "staging_data_mode enabled but prod bucket/role values are empty"
+        fi
+
+      else
+        gen3_log_warn "staging_data_mode enabled but prod bucket/role keys missing in manifest"
+      fi
+    fi
+
     # make it easy for nginx to get the Authorization header ...
     echo -n "gateway:$password" | base64 > "$secretsFolder/base64Authz.txt"
   fi
