@@ -122,7 +122,11 @@ function set_squid_config(){
     -extfile <(printf "[v3_ca]\nsubjectKeyIdentifier=hash\nauthorityKeyIdentifier=keyid:always,issuer\nbasicConstraints=critical,CA:true\nkeyUsage=critical,digitalSignature,cRLSign,keyCertSign")
   cat ${SQUID_CONFIG_DIR}/ssl/squid.key ${SQUID_CONFIG_DIR}/ssl/squid.crt | sudo tee ${SQUID_CONFIG_DIR}/ssl/squid.pem
   mkdir -p ${SQUID_LOGS_DIR} ${SQUID_CACHE_DIR}
-  chown -R nobody:nogroup ${SQUID_LOGS_DIR} ${SQUID_CACHE_DIR} ${SQUID_CONFIG_DIR}
+  if [[ $DISTRO == "Ubuntu" ]]; then
+    chown -R nobody:nogroup ${SQUID_LOGS_DIR} ${SQUID_CACHE_DIR} ${SQUID_CONFIG_DIR}
+  else
+    chown -R nobody:nobody ${SQUID_LOGS_DIR} ${SQUID_CACHE_DIR} ${SQUID_CONFIG_DIR}
+  fi
 }
 
 
@@ -133,8 +137,8 @@ function configure_iptables(){
   # firewall or basically iptables 
   ###############################################################
   cp ${SUB_FOLDER}/flavors/squid_auto/startup_configs/iptables-docker.conf /etc/iptables.conf
+  mkdir -p /etc/network/if-up.d
   cp ${SUB_FOLDER}/flavors/squid_auto/startup_configs/iptables-rules /etc/network/if-up.d/iptables-rules
-  
   chown root: /etc/network/if-up.d/iptables-rules
   chmod 0755 /etc/network/if-up.d/iptables-rules
 
@@ -336,7 +340,7 @@ function main(){
   max_attempts=10
   attempt_counter=0
   while [ $attempt_counter -lt $max_attempts ]; do
-    #((attempt_counter++))
+    ((attempt_counter++))
     sleep 10
     if [[ -z "$(sudo lsof -i:3128)" ]]; then
       echo "Squid not healthy, restarting."
