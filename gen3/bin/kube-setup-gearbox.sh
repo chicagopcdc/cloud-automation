@@ -52,8 +52,6 @@ S3_AWS_ACCESS_KEY_ID=$(jq -r .gearbox.gearbox_bucket_aws_key_id < "$GEN3_SECRETS
 S3_AWS_SECRET_ACCESS_KEY=$(jq -r .gearbox.gearbox_bucket_aws_access_key < "$GEN3_SECRETS_HOME/creds.json")
 
 ADMIN_LOGINS=gateway:$password
-ENABLE_PHI=$ENABLE_PHI
-BYPASS_IMPORTANT_QUESTIONS=True
 EOM
     if g3k_config_lookup '.gearbox.staging_data_mode' >/dev/null 2>&1; then
       if s3_prod_bucket_name=$(g3k_config_lookup '.gearbox.s3_prod_bucket_name' 2>/dev/null) \
