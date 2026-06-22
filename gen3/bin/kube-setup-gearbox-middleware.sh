@@ -23,6 +23,13 @@ setup_gearbox_middle() {
 
     local creds_src="$(gen3_secrets_folder)/creds.json"
     if [[ -f "$creds_src" ]]; then
+
+    if g3k_config_lookup '.global.enable_phi' 2> /dev/null; then
+      ENABLE_PHI=True
+    else
+      ENABLE_PHI=False
+    fi
+
       
 
     cat - > "$secretsFolder/gearbox-middleware.env" <<EOM
@@ -31,6 +38,12 @@ DB_USER=$(jq -r .gearbox.db_username < "$creds_src")
 DB_PASSWORD=$(jq -r .gearbox.db_password < "$creds_src")
 DB_DATABASE=$(jq -r .gearbox.db_database < "$creds_src")
 ADMIN_LOGINS=gateway:$password
+# READ FROM $GEN3_SECRETS_HOME/creds.json & use jq to read
+S3_BUCKET_NAME=$(jq -r .gearbox.gearbox_match_conditions_bucket_name < "$GEN3_SECRETS_HOME/creds.json")
+S3_AWS_ACCESS_KEY_ID=$(jq -r .gearbox.gearbox_bucket_aws_key_id < "$GEN3_SECRETS_HOME/creds.json")
+S3_AWS_SECRET_ACCESS_KEY=$(jq -r .gearbox.gearbox_bucket_aws_access_key < "$GEN3_SECRETS_HOME/creds.json")
+ENABLE_PHI=$ENABLE_PHI
+BYPASS_IMPORTANT_QUESTIONS=True
 EOM
 
     else
