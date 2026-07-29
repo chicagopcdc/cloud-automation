@@ -39,6 +39,7 @@ module "cdis_vpc" {
   gearbox_allowed_origins             = "${split(",",var.hostname)}"
   prod_promotion_role_arn             = "${var.prod_promotion_role_arn}"
   staging_account_id                  = "${var.staging_account_id}"
+  staging_bucket_name                 = "${var.staging_bucket_name}"
   is_gearbox_staging                  = "${var.is_gearbox_staging}"
   is_gearbox_prod                     = "${var.is_gearbox_prod}"
 
