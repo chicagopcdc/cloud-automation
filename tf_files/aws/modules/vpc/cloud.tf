@@ -97,6 +97,34 @@ module "gearbox-bot-user" {
   is_gearbox_prod       = "${var.is_gearbox_prod}"
 }
 
+resource "aws_s3_bucket_policy" "allow_prod_role_read" {
+  count  = "${var.is_gearbox_staging ? 1 : 0}"
+  bucket = "${module.gearbox-match-conditions-bucket.data-bucket-with-versioning_name}"
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "${var.prod_promotion_role_arn}"
+      },
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::${module.gearbox-match-conditions-bucket.data-bucket-with-versioning_name}",
+        "arn:aws:s3:::${module.gearbox-match-conditions-bucket.data-bucket-with-versioning_name}/*"
+      ]
+    }
+  ]
+}
+POLICY
+}
+
 resource "aws_vpc" "main" {
   cidr_block           = "${var.vpc_cidr_block}"
 
