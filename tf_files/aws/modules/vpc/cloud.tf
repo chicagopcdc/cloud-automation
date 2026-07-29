@@ -92,6 +92,7 @@ module "gearbox-bot-user" {
   bucket_access_arns   = "${var.gearbox-bot_bucket_access_arns}"
   prod_promotion_role_arn = "${var.prod_promotion_role_arn}"
   staging_account_id    = "${var.staging_account_id}"
+  staging_bucket_name   = "${var.staging_bucket_name}"
   is_gearbox_staging    = "${var.is_gearbox_staging}"
   is_gearbox_prod       = "${var.is_gearbox_prod}"
 }

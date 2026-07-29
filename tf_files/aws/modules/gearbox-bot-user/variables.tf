@@ -11,6 +11,13 @@ variable "bucket_access_arns" {
   default     = []
 }
 
+variable "is_gearbox_staging" {
+  default = false
+}
+
+variable "is_gearbox_prod" {
+  default = false
+}
 
 variable "prod_promotion_role_arn" {
   default     = ""
@@ -22,10 +29,12 @@ variable "staging_account_id" {
   description = "Role ARN in PROD that staging can assume. Null in prod."
 }
 
-variable "is_gearbox_staging" {
-  default = false
+variable "staging_bucket_name" {
+  description = "Name of the staging S3 bucket that the prod promotion role needs read access to"
+  default     = ""
 }
 
-variable "is_gearbox_prod" {
-  default = false
-}
+
+
+
+

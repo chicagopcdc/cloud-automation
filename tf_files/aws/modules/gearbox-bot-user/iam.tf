@@ -241,6 +241,18 @@ resource "aws_iam_policy" "staging_promotion_policy" {
         "s3:DeleteObject"
       ],
       "Resource": "arn:aws:s3:::${var.bucket_name}/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::${var.staging_bucket_name}",
+        "arn:aws:s3:::${var.staging_bucket_name}/*"
+      ]
     }
   ]
 }

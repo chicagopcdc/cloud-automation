@@ -547,6 +547,11 @@ variable "staging_account_id" {
   description = "Role ARN in PROD that staging can assume. Null in prod."
 }
 
+variable "staging_bucket_name" {
+  description = "Name of the staging S3 bucket that the prod promotion role needs read access to"
+  default     = ""
+}
+
 variable "is_gearbox_staging" {
   default = false
 }
