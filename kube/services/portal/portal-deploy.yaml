@@ -196,6 +196,12 @@ spec:
                 name: manifest-global
                 key: enable_phi
                 optional: true
+          - name: REACT_APP_GEOAPIFY_API_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: geoapify_api_key
+                optional: true
           - name: MAPBOX_API_TOKEN
             # Optional token for mapbox api
             valueFrom:
