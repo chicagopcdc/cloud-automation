@@ -15,6 +15,9 @@ spec:
       - podSelector:
           matchLabels:
             app: ambassador-gen3
+      - podSelector:
+          matchLabels:
+            app: pcdcanalysistools
   policyTypes:
    - Ingress
 ---
