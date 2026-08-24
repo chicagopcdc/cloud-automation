@@ -213,6 +213,9 @@ def set_prod_defaults_amanuensis(config_file_path):
     print("  ARBORIST set as http://arborist-service/")
     config_file = _replace(config_file, "ARBORIST", "http://arborist-service/")
 
+    print("  USER_API set as http://fence-service")
+    config_file = _replace(config_file, "USER_API", "http://fence-service")
+
     print("  HTTP_PROXY/host set as cloud-proxy.internal.io")
     config_file = _replace(config_file, "HTTP_PROXY/host", "cloud-proxy.internal.io")
 
