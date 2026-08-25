@@ -1,0 +1,71 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: amanuensis-validate-project-datapoints
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: gen3job
+    spec:  
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: eks.amazonaws.com/capacityType
+                operator: In
+                values:
+                - ONDEMAND
+      serviceAccountName: useryaml-job
+      volumes:
+        - name: config-volume
+          secret:
+            secretName: "amanuensis-config"
+            items:
+              - key: amanuensis-config.yaml
+                path: amanuensis-config.yaml
+            optional: false
+        - name: data-dictionary-volume
+          emptyDir: {}
+      initContainers:
+        - name: create-data-dictionary-config
+          image: "quay.io/cdis/awshelper:stable"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DICTIONARY_URL
+              value: "https://portal.pedscommons.org/api/v0/submission/_dictionary/_all"
+            - name: OUTPUT_FILE
+              value: "/tmp/data-dictionary/data_dictionary.json"
+          volumeMounts:
+            - name: "data-dictionary-volume"
+              mountPath: "/tmp/data-dictionary"
+          args:
+            - /bin/bash
+            - -c
+            - |
+              curl --fail --silent --show-error --retry 3 "$DICTIONARY_URL" -o "$OUTPUT_FILE"
+              # a truncated or non-JSON download would silently invalidate every
+              # datapoint, so fail the job here instead
+              python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$OUTPUT_FILE"
+              echo "Data dictionary downloaded successfully."
+      containers:
+        - name: validate-project-datapoints
+          GEN3_AMANUENSIS_IMAGE
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: "config-volume"
+              readOnly: true
+              mountPath: "/var/www/amanuensis/amanuensis-config.yaml"
+              subPath: amanuensis-config.yaml
+            - name: "data-dictionary-volume"
+              mountPath: "/var/www/amanuensis/data_dictionary.json"
+              subPath: data_dictionary.json
+          args:
+            - /bin/bash
+            - -c
+            - |
+              validate-project-datapoints 
+      restartPolicy: Never

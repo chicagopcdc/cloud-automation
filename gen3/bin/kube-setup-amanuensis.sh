@@ -57,6 +57,15 @@ else
   gen3_log_info "amanuensis version $amanuensisVersion does not support the validate filter-set cronjob"
 fi
 
+# amanuensis versions greater than 3.2.0 introduces this job
+if [[ "$amanuensisVersion" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+  if (semver_ge "$amanuensisVersion" "3.2.0"); then
+    gen3 job run "${GEN3_HOME}/kube/services/jobs/amanuensis-validate-project-datapoints-job.yaml"
+  fi
+else
+  gen3_log_info "amanuensis version $amanuensisVersion does not support the validate project datapoints job"
+fi
+
 # g3kubectl apply -f "${GEN3_HOME}/kube/services/amanuensis/amanuensis-canary-service.yaml"
 gen3_log_info "The amanuensis service has been deployed onto the k8s cluster."
 
