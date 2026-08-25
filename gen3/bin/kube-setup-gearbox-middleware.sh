@@ -30,7 +30,7 @@ setup_gearbox_middle() {
       ENABLE_PHI=False
     fi
 
-      
+    GEOAPIFY_API_KEY="$(g3k_config_lookup '.global.geoapify_api_key' 2>/dev/null || true)"
 
     cat - > "$secretsFolder/gearbox-middleware.env" <<EOM
 DB_HOST=$(jq -r .gearbox.db_host < "$creds_src")
@@ -44,6 +44,7 @@ S3_AWS_ACCESS_KEY_ID=$(jq -r .gearbox.gearbox_bucket_aws_key_id < "$GEN3_SECRETS
 S3_AWS_SECRET_ACCESS_KEY=$(jq -r .gearbox.gearbox_bucket_aws_access_key < "$GEN3_SECRETS_HOME/creds.json")
 ENABLE_PHI=$ENABLE_PHI
 BYPASS_IMPORTANT_QUESTIONS=True
+GEOAPIFY_API_KEY=${GEOAPIFY_API_KEY:-}
 EOM
 
     else

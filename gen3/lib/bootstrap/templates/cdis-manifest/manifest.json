@@ -45,7 +45,10 @@
     "sync_from_dbgap": "False",
     "useryaml_s3path": "",
     "netpolicy": "on",
-    "enable_phi": false
+    "enable_phi": false,
+    "geoapify_api_key": "",
+    "deploy_production_data_url": "",
+    "refresh_production_data_url": ""
   },
   "canary": {
     "default": 0
