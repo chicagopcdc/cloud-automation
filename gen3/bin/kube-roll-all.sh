@@ -18,7 +18,7 @@ gen3_load "gen3/lib/kube-setup-init"
 
 # Set flag, so we can avoid doing things over and over
 export GEN3_ROLL_ALL=true
-
+gen3 db init
 if [[ "$GEN3_ROLL_FAST" != "true" ]]; then
   gen3 kube-setup-workvm
   # kube-setup-roles runs before kube-setup-secrets -
