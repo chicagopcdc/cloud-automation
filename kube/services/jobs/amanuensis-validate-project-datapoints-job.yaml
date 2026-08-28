@@ -35,8 +35,12 @@ spec:
           image: "quay.io/cdis/awshelper:stable"
           imagePullPolicy: IfNotPresent
           env:
+            # the dictionary sheepdog is currently serving in this namespace, so
+            # each environment validates against its own dictionary. Not the raw
+            # dictionary_url artifact: that leaves links as unresolved $ref, so
+            # every link-addressed value would be marked invalid.
             - name: DICTIONARY_URL
-              value: "https://portal.pedscommons.org/api/v0/submission/_dictionary/_all"
+              value: "http://sheepdog-service/api/v0/submission/_dictionary/_all"
             - name: OUTPUT_FILE
               value: "/tmp/data-dictionary/data_dictionary.json"
           volumeMounts:
