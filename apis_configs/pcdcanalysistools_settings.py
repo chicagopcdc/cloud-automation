@@ -144,7 +144,7 @@ config['TABLE_ONE'] = {
             'field': 'studies.treatment_arm',
         }
     ],
-    'enabled': False
+    'enabled': True
 }
 
 app_init(app)
