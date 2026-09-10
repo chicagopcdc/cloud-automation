@@ -39,6 +39,9 @@
     "aws_access_key_id": "",
     "aws_secret_access_key": ""
   },
+  "gearbox-middleware": {
+    "geoapify_api_key": ""
+  },
   "ssjdispatcher": {
     "SQS": {
       "url": ""
