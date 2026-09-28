@@ -52,6 +52,7 @@
 .figshare.com
 .gen3.org
 .genome.jp
+.genomicaicommons.org
 .github.com
 .githubusercontent.com
 .gitlab.com
@@ -71,6 +72,7 @@
 .kegg.jp
 .kernel.org
 .kidsfirstdrc.org
+.kyverno.io
 .letsencrypt.org
 .m3aicommons.org
 .maven.org
@@ -88,11 +90,13 @@
 .occ-pla.net
 .oicr.on.ca
 .okta.com
+.openneuro.org
 .opensciencedatacloud.org
 .osf.io
 .osuosl.org
 .paloaltonetworks.com
 .pandemicresponsecommons.org
+.pennsieve.io
 .perl.org
 .pedscommons.org
 .planx-ci.io
@@ -101,6 +105,7 @@
 .pypi.org
 .pypi.python.org
 .pythonhosted.org
+.pytorch.org
 .pyx4me.com
 .qg3.apps.qualys.com
 .quay.io
@@ -130,6 +135,7 @@
 .virtualbox.org
 .visitdata.org
 .wriwindber.org
+.xsede.org
 .xmission.com
 .yahooapis.com
 .yarnpkg.com
