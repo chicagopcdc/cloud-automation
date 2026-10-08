@@ -178,6 +178,24 @@ spec:
                 name: manifest-global
                 key: privacy_policy_url
                 optional: true
+          - name: REACT_APP_ENHANCED_UI
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: react_app_enhanced_ui
+                optional: true
+          - name: DEPLOY_PRODUCTION_DATA_URL
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: deploy_production_data_url
+                optional: true
+          - name: REFRESH_PRODUCTION_DATA_URL
+            valueFrom:
+              configMapKeyRef:
+                name: manifest-global
+                key: refresh_production_data_url
+                optional: true
           - name: MAPBOX_API_TOKEN
             # Optional token for mapbox api
             valueFrom:
