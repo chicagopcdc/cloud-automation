@@ -56,7 +56,7 @@ spec:
             - "-c"
             - |
               echo "disabling usersync before migration"
-              kubectl patch cronjobs usersync -p '{"spec" : {"suspend" : true }}'
+              kubectl patch cronjobs usersync -p '{"spec" : {"suspend" : true }}' || echo "usersync cronjob not found, skipping"
               while [ ! -z "$(kubectl get pods | grep 'usersync\|useryaml' | grep 'Running\|Pending\|ContainerCreating\|ImagePullBackOff\|ErrImagePull')" ]
               do
                 sleep 5
@@ -129,5 +129,5 @@ spec:
               echo "waiting for migration to end"
             done
             echo "migration completed enabling usersync"
-            kubectl patch cronjobs usersync -p '{"spec" : {"suspend" : false }}'
+            kubectl patch cronjobs usersync -p '{"spec" : {"suspend" : false }}' || echo "usersync cronjob not found, skipping"
       restartPolicy: Never
