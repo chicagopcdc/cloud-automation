@@ -290,7 +290,7 @@ def main():
         for route in routing_table['Routes']: 
             if 'DestinationCidrBlock' in route:
                 if route['DestinationCidrBlock'] == '0.0.0.0/0':
-                    current_gw_instance_id = route['InstanceId']
+                    current_gw_instance_id = route.get('InstanceId', '')
                     break
 
     available_proxies = get_healthy_instances_id(get_asg("squid-auto-%s" % os.environ.get('vpc_name')))
