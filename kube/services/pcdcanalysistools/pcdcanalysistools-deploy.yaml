@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pcdcanalysistools-deployment
+  annotations:
+    # amanuensis calls /tools/stats/consortiums when creating projects
+    gen3.io/network-ingress: "amanuensis"
 spec:
   selector:
     # Only select pods based on the 'app' label  
